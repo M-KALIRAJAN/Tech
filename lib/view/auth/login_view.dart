@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:tech_app/controllers/Auth_Controllers.dart';
+import 'package:tech_app/routes/route_name.dart';
 import 'package:tech_app/view/bottom_nav.dart';
 import 'package:tech_app/widgets/inputs/app_text_field.dart';
 import 'package:tech_app/widgets/inputs/primary_button.dart';
@@ -12,7 +15,8 @@ class LoginView extends StatefulWidget {
 
 class _LoginViewState extends State<LoginView> {
   bool isChecked = false;
-
+  final _fromkey = GlobalKey<FormState>();
+  final _authcontroller = AuthControllers();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,17 +28,13 @@ class _LoginViewState extends State<LoginView> {
             fit: BoxFit.cover,
           ),
         ),
-
         child: SafeArea(
           child: SingleChildScrollView(
             child: Column(
               children: [
                 SizedBox(height: 20),
-
                 Center(child: Image.asset("assets/images/logo.png")),
-
-                SizedBox(height: 30),
-
+                SizedBox(height: 20),
                 Container(
                   width: double.infinity,
                   decoration: BoxDecoration(
@@ -45,72 +45,82 @@ class _LoginViewState extends State<LoginView> {
                     ),
                   ),
                   padding: EdgeInsets.all(20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(height: 20),
-                      Text(
-                        "Welcome!",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(height: 15),
+                  child: Form(
+                    key: _fromkey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(height: 20),
+                        Text(
+                          "Welcome!",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(height: 15),
 
-                      AppTextField(
-                        label: "Enter Email",
-                        keyboardType: TextInputType.emailAddress,
-                      ),
-                      SizedBox(height: 15),
+                        AppTextField(
+                          label: "Enter Email",
+                          keyboardType: TextInputType.emailAddress,
+                        ),
+                        SizedBox(height: 15),
 
-                      AppTextField(
-                        label: "Enter Password",
-                        keyboardType: TextInputType.visiblePassword,
-                        surfixIcon: Icon(Icons.visibility_off),
-                      ),
+                        AppTextField(
+                          label: "Enter Password",
+                          keyboardType: TextInputType.visiblePassword,
+                          surfixIcon: Icon(Icons.visibility_off),
+                        ),
 
-                      SizedBox(height: 20),
+                        SizedBox(height: 20),
 
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              Checkbox(
-                                value: isChecked,
-                                onChanged: (v) {
-                                  setState(() {
-                                    isChecked = v!;
-                                  });
-                                },
-                              ),
-                              Text("Remember me"),
-                            ],
-                          ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                Checkbox(
+                                  value: isChecked,
+                                  onChanged: (v) {
+                                    setState(() {
+                                      isChecked = v!;
+                                    });
+                                  },
+                                ),
+                                Text("Remember me"),
+                              ],
+                            ),
 
-                          TextButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (_) => BottomNav()),
-                              );
-                            },
-                            child: Text("Forgot Password?"),
-                          ),
-                        ],
-                      ),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => BottomNav(),
+                                  ),
+                                );
+                              },
+                              child: Text("Forgot Password?"),
+                            ),
+                          ],
+                        ),
 
-                      SizedBox(height: 20),
+                        SizedBox(height: 20),
 
-                      PrimaryButton(
-                        height: 48,
-                        Width: double.infinity,
-                        radius: 12,
-                        color: Colors.green,
-                        onPressed: () {},
-                        text: "Login",
-                      ),
+                        PrimaryButton(
+                          height: 48,
+                          Width: double.infinity,
+                          radius: 12,
+                          color: Colors.green,
+                          onPressed: () async {
+                            
+                              // final response = await _authcontroller.Login();
+                              context.push(RouteName.bottom_nav);
+                          
+                          },
+                          text: "Login",
+                        ),
 
-                      SizedBox(height: 20),
-                    ],
+                        SizedBox(height: 20),
+                      ],
+                    ),
                   ),
                 ),
               ],

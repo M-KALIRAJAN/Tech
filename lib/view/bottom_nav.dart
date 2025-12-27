@@ -14,29 +14,32 @@ class BottomNav extends StatefulWidget {
 
 class _BottomNavState extends State<BottomNav> {
   int _selectedIndex = 0;
-  void changeTab(int index) {
-    _selectedIndex = index;
-  }
 
-  late final List<Widget> screens;
+  late final List<Widget Function()> screens;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     screens = [
-      HomeView(),
-      MyRequestView(),
-      LivechatView(),
-      ProfileView(),
-      SettingView(),
+    ()=>  HomeView(),
+     ()=> MyRequestView(),
+     ()=> LivechatView(),
+      ()=>ProfileView(),
+     ()=> SettingView(),
     ];
   }
+    void changeTab(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: IndexedStack(index: _selectedIndex, children: screens),
+      body: screens[_selectedIndex](),
       bottomNavigationBar: Container(
         height: 85,
         decoration: BoxDecoration(
