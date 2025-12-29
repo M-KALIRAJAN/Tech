@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:tech_app/core/constants/app_colors.dart';
 import 'package:tech_app/view/home_view.dart';
 import 'package:tech_app/view/livechat_view.dart';
 import 'package:tech_app/view/my_request_view.dart';
 import 'package:tech_app/view/profile_view.dart';
-import 'package:tech_app/view/setting_view.dart';
 
 class BottomNav extends StatefulWidget {
   const BottomNav({super.key});
@@ -22,19 +22,18 @@ class _BottomNavState extends State<BottomNav> {
     // TODO: implement initState
     super.initState();
     screens = [
-    ()=>  HomeView(),
-     ()=> MyRequestView(),
-     ()=> LivechatView(),
-      ()=>ProfileView(),
-     ()=> SettingView(),
+      () => HomeView(),
+      () => MyRequestView(),
+      () => LivechatView(),
+      () => ProfileView(),
     ];
   }
-    void changeTab(int index) {
+
+  void changeTab(int index) {
     setState(() {
       _selectedIndex = index;
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -71,6 +70,7 @@ class _BottomNavState extends State<BottomNav> {
             elevation: 0,
             type: BottomNavigationBarType.fixed,
             unselectedItemColor: Colors.grey,
+            selectedItemColor: AppColors.scoundry_clr,
             items: [
               BottomNavigationBarItem(
                 icon: ImageIcon(AssetImage("assets/icons/home.png"), size: 26),
@@ -109,17 +109,6 @@ class _BottomNavState extends State<BottomNav> {
                   size: 26,
                 ),
                 label: "Profile",
-              ),
-              BottomNavigationBarItem(
-                icon: ImageIcon(
-                  AssetImage("assets/icons/setting.png"),
-                  size: 26,
-                ),
-                activeIcon: ImageIcon(
-                  AssetImage("assets/icons/setting.png"),
-                  size: 26,
-                ),
-                label: "Setting",
               ),
             ],
           ),
