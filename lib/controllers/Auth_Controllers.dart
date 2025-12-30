@@ -28,12 +28,14 @@ class AuthControllers {
 
    //Login 
 
-  //  Future<bool> Login()async{
-  //   final authModel = AuthModel(
-  //     email: email.text, 
-  //     password: pasword.text);
-  //     // return  await;
-  //  }
+   Future<bool> login()async{
+    final authModel = AuthModel(
+      email: email.text, 
+      password: pasword.text);
+   debugPrint("Email: ${authModel.email}");
+     debugPrint("pasword: ${authModel.password}");
+     return true;
+   }
 
    // Dispose
    void dispose() {

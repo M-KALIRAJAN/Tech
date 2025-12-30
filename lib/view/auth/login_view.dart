@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tech_app/controllers/Auth_Controllers.dart';
+import 'package:tech_app/core/constants/app_colors.dart';
 import 'package:tech_app/routes/route_name.dart';
 import 'package:tech_app/view/bottom_nav.dart';
 import 'package:tech_app/widgets/inputs/app_text_field.dart';
@@ -19,6 +20,7 @@ class _LoginViewState extends State<LoginView> {
   final _authcontroller = AuthControllers();
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       resizeToAvoidBottomInset: true,
       body: Container(
@@ -33,8 +35,8 @@ class _LoginViewState extends State<LoginView> {
             child: Column(
               children: [
                 SizedBox(height: 20),
-                Center(child: Image.asset("assets/images/logo.png")),
-                SizedBox(height: 20),
+                Center(child: Image.asset("assets/images/logo.png" ,width: screenWidth * 0.9)),
+        
                 Container(
                   width: double.infinity,
                   decoration: BoxDecoration(
@@ -56,21 +58,21 @@ class _LoginViewState extends State<LoginView> {
                           style: TextStyle(fontWeight: FontWeight.bold),
                         ),
                         SizedBox(height: 15),
-
                         AppTextField(
                           label: "Enter Email",
                           keyboardType: TextInputType.emailAddress,
+                          controller: _authcontroller.email,
+                          validator: _authcontroller.validateEmail,
                         ),
                         SizedBox(height: 15),
-
                         AppTextField(
                           label: "Enter Password",
                           keyboardType: TextInputType.visiblePassword,
                           surfixIcon: Icon(Icons.visibility_off),
+                          controller: _authcontroller.pasword,
+                          validator: _authcontroller.validatePassword,
                         ),
-
                         SizedBox(height: 20),
-
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -87,7 +89,7 @@ class _LoginViewState extends State<LoginView> {
                                 Text("Remember me"),
                               ],
                             ),
-
+                  
                             TextButton(
                               onPressed: () {
                                 Navigator.push(
@@ -97,27 +99,32 @@ class _LoginViewState extends State<LoginView> {
                                   ),
                                 );
                               },
-                              child: Text("Forgot Password?"),
+                              child: Text("Forgot Password?",style: TextStyle(color: AppColors.scoundry_clr),),
                             ),
                           ],
                         ),
-
+                  
                         SizedBox(height: 20),
-
+                  
                         PrimaryButton(
                           height: 48,
                           Width: double.infinity,
                           radius: 12,
-                          color: Colors.green,
+                          color: AppColors.primary_clr,
                           onPressed: () async {
-                            
-                              // final response = await _authcontroller.Login();
+                           if(_fromkey.currentState!.validate()){
+                            final response = await _authcontroller.login();
+                  
+                            if(response){
                               context.push(RouteName.bottom_nav);
+                            }
+                           }
+                              
                           
                           },
                           text: "Login",
                         ),
-
+                  
                         SizedBox(height: 20),
                       ],
                     ),

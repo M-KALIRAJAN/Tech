@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tech_app/core/constants/app_colors.dart';
+import 'package:tech_app/view/bulk_request.dart';
 import 'package:tech_app/view/home_view.dart';
 import 'package:tech_app/view/livechat_view.dart';
 import 'package:tech_app/view/my_request_view.dart';
@@ -24,7 +25,8 @@ class _BottomNavState extends State<BottomNav> {
     screens = [
       () => HomeView(),
       () => MyRequestView(),
-      () => LivechatView(),
+      // () => LivechatView(),
+      ()=>BulkRequest(),
       () => ProfileView(),
     ];
   }
