@@ -34,6 +34,7 @@ class AppTextField extends StatelessWidget {
 
         labelStyle: TextStyle(fontSize: 14, color: Color(0xFF79747E)),
         floatingLabelStyle: TextStyle(fontSize: 12,color: AppColors.scoundry_clr),
+       
         filled: true,
         fillColor: Colors.white, 
         border: OutlineInputBorder(

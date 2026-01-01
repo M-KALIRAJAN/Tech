@@ -3,8 +3,10 @@ import 'package:tech_app/core/constants/app_colors.dart';
 import 'package:tech_app/view/bulk_request.dart';
 import 'package:tech_app/view/home_view.dart';
 import 'package:tech_app/view/livechat_view.dart';
+import 'package:tech_app/view/material_inventory_view.dart';
 import 'package:tech_app/view/my_request_view.dart';
 import 'package:tech_app/view/profile_view.dart';
+import 'package:tech_app/view/update_request_view.dart';
 
 class BottomNav extends StatefulWidget {
   const BottomNav({super.key});
@@ -24,9 +26,10 @@ class _BottomNavState extends State<BottomNav> {
     super.initState();
     screens = [
       () => HomeView(),
-      () => MyRequestView(),
+      // () => MyRequestView(),
+      () => MaterialInventoryView(),
       // () => LivechatView(),
-      ()=>BulkRequest(),
+      () => UpdateRequestView(),
       () => ProfileView(),
     ];
   }
