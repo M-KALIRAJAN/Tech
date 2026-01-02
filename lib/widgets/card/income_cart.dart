@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tech_app/core/constants/app_colors.dart';
+import 'package:tech_app/routes/route_name.dart';
 
 class IncomeCard extends StatelessWidget {
   const IncomeCard({super.key});
@@ -17,31 +19,36 @@ class IncomeCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            height: 55,
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            decoration: BoxDecoration(
-              color: AppColors.primary_clr,
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(15),
-                topRight: Radius.circular(15),
-              ),
-            ),
-            child: Row(
-              children: const [
-                Expanded(
-                  child: Text(
-                    'Leaky Faucet Repair',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
-                    overflow: TextOverflow.ellipsis,
-                  ),
+          InkWell(
+            onTap: () {
+              context.push(RouteName.service_card);
+            },
+            child: Container(
+              height: 55,
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              decoration: BoxDecoration(
+                color: AppColors.primary_clr,
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(15),
+                  topRight: Radius.circular(15),
                 ),
-                Icon(Icons.arrow_forward_ios, size: 16, color: Colors.white),
-              ],
+              ),
+              child: Row(
+                children: const [
+                  Expanded(
+                    child: Text(
+                      'Leaky Faucet Repair',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  Icon(Icons.arrow_forward_ios, size: 16, color: Colors.white),
+                ],
+              ),
             ),
           ),
 
@@ -67,7 +74,6 @@ class IncomeCard extends StatelessWidget {
                 ),
 
                 const SizedBox(height: 12),
-
                 Row(
                   children: [
                     _iconBox(

@@ -6,6 +6,7 @@ import 'package:tech_app/view/livechat_view.dart';
 import 'package:tech_app/view/material_inventory_view.dart';
 import 'package:tech_app/view/my_request_view.dart';
 import 'package:tech_app/view/profile_view.dart';
+import 'package:tech_app/view/spare_part_used.dart';
 import 'package:tech_app/view/update_request_view.dart';
 
 class BottomNav extends StatefulWidget {
@@ -27,9 +28,11 @@ class _BottomNavState extends State<BottomNav> {
     screens = [
       () => HomeView(),
       // () => MyRequestView(),
-      () => MaterialInventoryView(),
+   
       // () => LivechatView(),
-      () => UpdateRequestView(),
+      // () => UpdateRequestView(),
+         ()=> SparePartUsed(),
+         () => MaterialInventoryView(),
       () => ProfileView(),
     ];
   }
@@ -83,7 +86,7 @@ class _BottomNavState extends State<BottomNav> {
                   AssetImage("assets/icons/home.png"),
                   size: 26,
                 ),
-                label: "Home",
+                label: "Requests",
               ),
               BottomNavigationBarItem(
                 icon: ImageIcon(
@@ -94,7 +97,7 @@ class _BottomNavState extends State<BottomNav> {
                   AssetImage("assets/icons/services.png"),
                   size: 27,
                 ),
-                label: "My Request",
+                label: "Active Tasks",
               ),
               BottomNavigationBarItem(
                 icon: ImageIcon(AssetImage("assets/icons/chat.png"), size: 26),
@@ -102,7 +105,7 @@ class _BottomNavState extends State<BottomNav> {
                   AssetImage("assets/icons/chat.png"),
                   size: 26,
                 ),
-                label: "Live chat",
+                label: "Inventory",
               ),
               BottomNavigationBarItem(
                 icon: ImageIcon(
