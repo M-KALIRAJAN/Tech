@@ -5,15 +5,20 @@ class PrimaryButton extends StatelessWidget {
   final double? Width;
   final double radius;
   final Color color;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   final String text;
+  final bool? isLoading;
 
   const PrimaryButton({
     super.key,
-     this.height, 
-     this.Width, 
-     required this.radius, 
-     required this.color, required this.onPressed, required this.text});
+    this.height,
+    this.Width,
+    required this.radius,
+    required this.color,
+    required this.onPressed,
+    required this.text,
+    this.isLoading = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -24,12 +29,27 @@ class PrimaryButton extends StatelessWidget {
         style: ElevatedButton.styleFrom(
           backgroundColor: color,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadiusGeometry.circular(radius)
-          )
+            borderRadius: BorderRadius.circular(radius),
+          ),
         ),
         onPressed: onPressed,
-         child: Text(text,style: TextStyle(color: Colors.white),)),
-      
+        child: isLoading == true
+            ? const SizedBox(
+                height: 22,
+                width: 22,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: Colors.white,
+                ),
+              )
+            : Text(
+                text,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+      ),
     );
   }
 }

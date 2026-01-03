@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tech_app/controllers/Auth_Controllers.dart';
 import 'package:tech_app/core/constants/app_colors.dart';
+import 'package:tech_app/core/utils/snackbar_helper.dart';
 import 'package:tech_app/routes/route_name.dart';
 import 'package:tech_app/view/bottom_nav.dart';
 import 'package:tech_app/widgets/inputs/app_text_field.dart';
@@ -16,6 +17,7 @@ class LoginView extends StatefulWidget {
 
 class _LoginViewState extends State<LoginView> {
   bool isChecked = false;
+  bool isLoading = false;
   final _fromkey = GlobalKey<FormState>();
   final _authcontroller = AuthControllers();
   @override
@@ -35,8 +37,13 @@ class _LoginViewState extends State<LoginView> {
             child: Column(
               children: [
                 SizedBox(height: 20),
-                Center(child: Image.asset("assets/images/logo.png" ,width: screenWidth * 0.9)),
-        
+                Center(
+                  child: Image.asset(
+                    "assets/images/logo.png",
+                    width: screenWidth * 0.9,
+                  ),
+                ),
+
                 Container(
                   width: double.infinity,
                   decoration: BoxDecoration(
@@ -89,7 +96,7 @@ class _LoginViewState extends State<LoginView> {
                                 Text("Remember me"),
                               ],
                             ),
-                  
+
                             TextButton(
                               onPressed: () {
                                 Navigator.push(
@@ -99,32 +106,52 @@ class _LoginViewState extends State<LoginView> {
                                   ),
                                 );
                               },
-                              child: Text("Forgot Password?",style: TextStyle(color: AppColors.scoundry_clr),),
+                              child: Text(
+                                "Forgot Password?",
+                                style: TextStyle(color: AppColors.scoundry_clr),
+                              ),
                             ),
                           ],
                         ),
-                  
+
                         SizedBox(height: 20),
-                  
+
                         PrimaryButton(
                           height: 48,
                           Width: double.infinity,
+                          isLoading: isLoading,
                           radius: 12,
                           color: AppColors.primary_clr,
                           onPressed: () async {
-                           if(_fromkey.currentState!.validate()){
-                            final response = await _authcontroller.login();
-                  
-                            if(response){
-                              context.push(RouteName.bottom_nav);
+                            if (_fromkey.currentState!.validate()) {
+                              setState(() {
+                                isLoading = true;
+                              });
+                              final errorMessage = await _authcontroller
+                                  .login();
+                              setState(() {
+                                isLoading = false;
+                              });
+                              if (errorMessage == null) {
+                                SnackbarHelper.show(
+                                  context,
+                                  message: "Login successful",
+                                  backgroundColor: AppColors.scoundry_clr,
+                                );
+                                context.push(RouteName.bottom_nav);
+                              } else {
+                                SnackbarHelper.show(
+                                  context,
+                                  message: errorMessage,
+                                  backgroundColor: Colors.red,
+                                );
+                                debugPrint("errorMessage $errorMessage");
+                              }
                             }
-                           }
-                              
-                          
                           },
                           text: "Login",
                         ),
-                  
+
                         SizedBox(height: 20),
                       ],
                     ),

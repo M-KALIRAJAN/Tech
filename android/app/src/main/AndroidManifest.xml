@@ -2,6 +2,8 @@
    
       <!-- Camera permission -->
     <uses-permission android:name="android.permission.CAMERA" />
+       <!-- Internet Permission -->
+    <uses-permission android:name="android.permission.INTERNET"/>
     <application
         android:label="tech_app"
         android:name="${applicationName}"

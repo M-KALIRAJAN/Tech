@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 
 class SnackbarHelper {
-  static void snackBar(BuildContext context, String message, Color color) {
-    ScaffoldMessenger.of(context)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(SnackBar(content: Text(message), backgroundColor: color));
-  }
+static void show(BuildContext context, {String? message, required Color backgroundColor}) {
+  ScaffoldMessenger.of(context)
+    ..hideCurrentSnackBar()
+    ..showSnackBar(SnackBar(
+      content: Text(message ?? "Something went wrong"), 
+      backgroundColor: backgroundColor
+    ));
+}
+
 }

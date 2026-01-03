@@ -17,7 +17,7 @@ class _BulkRequestState extends State<BulkRequest> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5),
+   
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(12),
@@ -31,7 +31,7 @@ class _BulkRequestState extends State<BulkRequest> {
               
               PrimaryButton(
                 radius: 12,
-                color: AppColors.primary_clr,
+                color: AppColors.scoundry_clr,
                 height: 55,
                 Width: double.infinity,
                 onPressed: () {

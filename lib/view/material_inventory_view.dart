@@ -20,8 +20,11 @@ class _MaterialInventoryViewState extends State<MaterialInventoryView> {
       body: SafeArea(
         child: Column(
           children: [
-            Header(title: "Material Inventory", showRefreshIcon: true),
-            const SizedBox(height: 5),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Header(title: "Material Inventory", showRefreshIcon: true),
+            ),
+           
             const Divider(),
             const SizedBox(height: 10),
             MaterialCart(),

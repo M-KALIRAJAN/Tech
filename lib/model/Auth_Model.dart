@@ -7,11 +7,16 @@ class AuthModel {
     required this.password,
   });
 
-  //Dart to => JSON
-  Map<String,dynamic>toJson(){
- return{
-  "email":email,
-  "password":password
- };
+  // Convert to JSON for API request
+  Map<String, dynamic> toJson() {
+    return {
+      "email": email,
+      "password": password,
+    };
+  }
+
+  @override
+  String toString() {
+    return 'AuthModel(email: $email, password: $password)';
   }
 }

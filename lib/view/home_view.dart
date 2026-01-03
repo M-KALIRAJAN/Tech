@@ -63,12 +63,12 @@ final List<String> filters = [
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background_clr,
+   
       body: SafeArea(
         child: Column(
           children: [
             const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+              padding: EdgeInsets.symmetric(horizontal: 15, ),
               child: Header(title: "Income Request"),
             ),
 

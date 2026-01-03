@@ -18,7 +18,7 @@ class _ProfileViewState extends State<ProfileView> {
         child: Column(
           children: [
             Header(title: "Profile Management"),
-            const SizedBox(height: 8),
+          
             const Divider(),
             const SizedBox(height: 10),
             Stack(
