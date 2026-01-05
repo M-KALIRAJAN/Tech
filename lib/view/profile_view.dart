@@ -27,7 +27,7 @@ class _ProfileViewState extends State<ProfileView> {
                   height: 120,
                   width: 120,
                   child: CircleAvatar(
-                    backgroundColor: Colors.grey,
+                    backgroundColor: Colors.grey.shade300,
                     child: Icon(Icons.person, size: 90),
                   ),
                 ),
@@ -41,7 +41,8 @@ class _ProfileViewState extends State<ProfileView> {
                       shape: BoxShape.circle,
                       color: AppColors.primary_clr,
                     ),
-                    child: Icon(Icons.person_pin_circle),
+                    child: Icon(Icons.edit_outlined)
+
                   ),
                 ),
               ],
@@ -98,7 +99,6 @@ class _ProfileViewState extends State<ProfileView> {
                         const SizedBox(height: 15),
                         AppTextField(label: "Babar"),
                         const SizedBox(height: 10),
-
                         Text(
                           "Email",
                           style: TextStyle(
@@ -109,7 +109,6 @@ class _ProfileViewState extends State<ProfileView> {
                         const SizedBox(height: 15),
                         AppTextField(label: "Babar"),
                         const SizedBox(height: 10),
-
                         Text(
                           "Mobile Number",
                           style: TextStyle(

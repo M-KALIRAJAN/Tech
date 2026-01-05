@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/rendering.dart';
 import 'package:tech_app/core/network/dio_client.dart';
 import 'package:tech_app/model/Auth_Model.dart';
+import 'package:tech_app/preferences/AppPerfernces.dart';
 
 class AuthService {
   final Dio _dio = DioClient.dio;
@@ -13,6 +14,11 @@ class AuthService {
         data: authmodel.toJson(),
       );
       debugPrint("Login API Response: ${response.data}");
+    final  token = response.data['token'];
+    if(token != null){
+  await Appperfernces.saveToken(token);
+    }
+  
       return response.data;
     } on DioException catch (e) {
       final message =
