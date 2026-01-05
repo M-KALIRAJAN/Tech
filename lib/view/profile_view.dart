@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tech_app/core/constants/app_colors.dart';
+import 'package:tech_app/model/TechnicianProfile_Model.dart';
+import 'package:tech_app/services/TechnicianProfile_Service.dart';
 import 'package:tech_app/widgets/header.dart';
 import 'package:tech_app/widgets/inputs/app_text_field.dart';
 
@@ -11,6 +13,33 @@ class ProfileView extends StatefulWidget {
 }
 
 class _ProfileViewState extends State<ProfileView> {
+  final TechnicianprofileService _service = TechnicianprofileService();
+  TechnicianProfile? _profile;
+  @override
+  void initState() {
+    super.initState();
+    profiledata();
+  }
+
+  Future<void> profiledata() async {
+    try {
+      final response = await _service.tech_profile();
+
+      debugPrint('RAW RESPONSE 👉 ${response.toJson()}');
+
+      if (!mounted) return;
+
+      setState(() {
+        _profile = response;
+      });
+
+      // ✅ SAFE LOG
+      debugPrint("FIRST NAME ✅ ${_profile?.data.firstName}");
+    } catch (e) {
+      debugPrint("❌ PROFILE ERROR: $e");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,7 +47,7 @@ class _ProfileViewState extends State<ProfileView> {
         child: Column(
           children: [
             Header(title: "Profile Management"),
-          
+
             const Divider(),
             const SizedBox(height: 10),
             Stack(
@@ -41,8 +70,7 @@ class _ProfileViewState extends State<ProfileView> {
                       shape: BoxShape.circle,
                       color: AppColors.primary_clr,
                     ),
-                    child: Icon(Icons.edit_outlined)
-
+                    child: Icon(Icons.edit_outlined),
                   ),
                 ),
               ],
