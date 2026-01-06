@@ -1,10 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+
 import 'package:tech_app/core/constants/app_colors.dart';
-import 'package:tech_app/routes/route_name.dart';
+
 
 class IncomeCard extends StatelessWidget {
-  const IncomeCard({super.key});
+    final String name;
+  final String service;
+  final String issue;
+  final String schedule;
+  final String assignmentStatus;
+  final VoidCallback onClick;
+  const IncomeCard({super.key, 
+  required this.name,
+   required this.service, 
+   required this.issue,
+    required this.schedule, 
+    required this.assignmentStatus, 
+    required this.onClick});
 
   @override
   Widget build(BuildContext context) {
@@ -20,9 +32,7 @@ class IncomeCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           InkWell(
-            onTap: () {
-              context.push(RouteName.service_card);
-            },
+            onTap:onClick,
             child: Container(
               height: 55,
               padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -34,10 +44,10 @@ class IncomeCard extends StatelessWidget {
                 ),
               ),
               child: Row(
-                children: const [
+                children:  [
                   Expanded(
                     child: Text(
-                      'Leaky Faucet Repair',
+                      issue,
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 16,
@@ -58,19 +68,19 @@ class IncomeCard extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Column(
               children: [
-                _infoRow(icon: Icons.person, text: 'Irshad'),
+                _infoRow(icon: Icons.person, text: name),
                 const SizedBox(height: 8),
 
                 _infoRow(
                   icon: Icons.pages,
-                  text: 'Plumbing',
+                  text: service,
                   iconBg: const Color.fromARGB(156, 169, 227, 212),
                 ),
                 const SizedBox(height: 8),
 
                 _infoRow(
                   icon: Icons.local_activity,
-                  text: 'March 15, 2024 at 10:00 AM',
+                  text: schedule,
                 ),
 
                 const SizedBox(height: 12),
@@ -81,8 +91,8 @@ class IncomeCard extends StatelessWidget {
                       bgColor: const Color.fromARGB(156, 169, 227, 212),
                     ),
                     const SizedBox(width: 10),
-                    const Expanded(
-                      child: Text('Plumbing', style: TextStyle(fontSize: 14)),
+                     Expanded(
+                      child: Text("8km", style: TextStyle(fontSize: 14)),
                     ),
                     Container(
                       padding: const EdgeInsets.symmetric(
@@ -93,8 +103,8 @@ class IncomeCard extends StatelessWidget {
                         color: AppColors.new_clr,
                         borderRadius: BorderRadius.circular(30),
                       ),
-                      child: const Text(
-                        'New',
+                      child:  Text(
+                        assignmentStatus,
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 12,
@@ -147,3 +157,9 @@ class IncomeCard extends StatelessWidget {
     );
   }
 }
+
+
+
+
+
+

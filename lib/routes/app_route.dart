@@ -7,6 +7,7 @@ import 'package:tech_app/view/bulk_request.dart';
 import 'package:tech_app/view/material_request.dart';
 import 'package:tech_app/view/update_request.dart';
 import 'package:tech_app/widgets/card/servicerequest_cart.dart';
+import 'package:tech_app/model/ServiceList _Model.dart';
 
 final Approute = GoRouter(
   initialLocation: RouteName.login,
@@ -28,9 +29,12 @@ final Approute = GoRouter(
           builder: (context, state) => const MaterialRequest(),
           ),
           GoRoute(
-            path: RouteName.service_card,
-            builder: (context, state) => const ServicerequestCart(),
-            ),
+  path: RouteName.service_card,
+  builder: (context, state) {
+    final Datum item = state.extra as Datum;
+    return ServicerequestCart(data: item);
+  },
+),
             GoRoute(
               path: RouteName.updated_status,
               builder: (context, state) => const UpdateRequest(),

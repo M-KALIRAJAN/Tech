@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:tech_app/core/constants/app_colors.dart';
 import 'package:tech_app/widgets/inputs/primary_button.dart';
+import 'package:tech_app/model/ServiceList _Model.dart';
 
 class ServicerequestCart extends StatelessWidget {
-  const ServicerequestCart({super.key});
+final Datum data; // 👈 STRONG TYPE
+
+  const ServicerequestCart({
+    super.key,
+    required this.data,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -69,15 +75,15 @@ class ServicerequestCart extends StatelessWidget {
                       padding: const EdgeInsets.all(16),
                       child: Column(
                         children: [
-                          _infoRow("Name", "MohammadSiraj"),
+                          _infoRow("Name", data.userId.basicInfo.fullName),
                           const Divider(),
-                          _infoRow("Email", "MohammadSiraj@gmail.in"),
+                          _infoRow("Email", data.userId.basicInfo.email),
                           const Divider(),
-                          _infoRow("Phone", "+973 78787887"),
+                          _infoRow("Phone", "+973 ${data.userId.basicInfo.mobileNumber}"),
                           const Divider(),
                           _infoRow(
                             "Address",
-                            "Building 12 Appartment1,floor2,Muharg",
+                            "building ${data.address.building} , floor ${data.address.floor}, aptNo ${data.address.aptNo}",
                           ),
                           const Divider(),
                           Row(
@@ -174,18 +180,18 @@ class ServicerequestCart extends StatelessWidget {
                       padding: const EdgeInsets.all(16),
                       child: Column(
                         children: [
-                          _infoRow("Service Type", "MohammadSiraj"),
+                          _infoRow("Service Type", data.serviceId.name),
                           const Divider(),
                           _infoRow(
                             "Description",
-                            "kjshruihkbxzkheruiwhjkasfhiuwryjkdbzfjklgweuiargkjszdfhiuwer8kjdhgiseurodioeshtoi",
+                            data.feedback ?? "",
                           ),
                           const Divider(),
-                          _infoRow("Date Required", "2025-10-15"),
+                          _infoRow("Date Required", data.scheduleService.toIso8601String()),
                           const Divider(),
                           _infoRow("Time Window", "10:00AM - 12:00Am"),
                           const Divider(),
-                          _infoRow("Date Created", "2025-10-15"),
+                          _infoRow("Date Created", data.createdAt.toIso8601String()),
                         ],
                       ),
                     ),
@@ -193,7 +199,8 @@ class ServicerequestCart extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 10),
-              Padding(
+              if(data.assignmentStatus == "pending")...[
+Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: PrimaryButton(
                   radius: 13,
@@ -217,6 +224,8 @@ class ServicerequestCart extends StatelessWidget {
                   text: "Rejected",
                 ),
               ),
+              ],
+                
               const SizedBox(height: 10),
             ],
           ),
@@ -252,7 +261,6 @@ class ServicerequestCart extends StatelessWidget {
   //Reject
   void _showRejectReasonSheet(BuildContext context) {
     final TextEditingController reasonController = TextEditingController();
-
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -295,9 +303,7 @@ class ServicerequestCart extends StatelessWidget {
                   ),
                 ),
               ),
-
               const SizedBox(height: 20),
-
               Row(
                 children: [
                   Expanded(

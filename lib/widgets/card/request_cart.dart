@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tech_app/core/constants/app_colors.dart';
 
 class RequestCart extends StatelessWidget {
-  const RequestCart({super.key});
+  const RequestCart({super.key, required String service});
 
   Widget _infoRow(String label, String value) {
     return Padding(

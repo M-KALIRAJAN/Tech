@@ -1,113 +1,59 @@
-// To parse this JSON data, do
-//
-//     final inventoryMaterial = inventoryMaterialFromJson(jsonString);
-
-import 'dart:convert';
-
-InventoryMaterial inventoryMaterialFromJson(String str) => InventoryMaterial.fromJson(json.decode(str));
-
-String inventoryMaterialToJson(InventoryMaterial data) => json.encode(data.toJson());
-
 class InventoryMaterial {
-    String message;
-    List<Datum> data;
+  List<InventoryItem> data;
 
-    InventoryMaterial({
-        required this.message,
-        required this.data,
-    });
+  InventoryMaterial({required this.data});
 
-    factory InventoryMaterial.fromJson(Map<String, dynamic> json) => InventoryMaterial(
-        message: json["message"],
-        data: List<Datum>.from(json["data"].map((x) => Datum.fromJson(x))),
-    );
-
-    Map<String, dynamic> toJson() => {
-        "message": message,
-        "data": List<dynamic>.from(data.map((x) => x.toJson())),
-    };
+  factory InventoryMaterial.fromJson(Map<String, dynamic> json) => InventoryMaterial(
+        data: List<InventoryItem>.from(
+            (json["data"] as List).map((x) => InventoryItem.fromJson(x))),
+      );
 }
 
-class Datum {
-    String id;
-    String technicianId;
-    ProductId productId;
-    String count;
-    DateTime createdAt;
-    DateTime updatedAt;
-    int v;
+class InventoryItem {
+  String id;
+  String technicianId;
+  Product productId; // ✅ match JSON
+  int count;
 
-    Datum({
-        required this.id,
-        required this.technicianId,
-        required this.productId,
-        required this.count,
-        required this.createdAt,
-        required this.updatedAt,
-        required this.v,
-    });
+  InventoryItem({
+    required this.id,
+    required this.technicianId,
+    required this.productId,
+    required this.count,
+  });
 
-    factory Datum.fromJson(Map<String, dynamic> json) => Datum(
-        id: json["_id"],
-        technicianId: json["technicianId"],
-        productId: ProductId.fromJson(json["productId"]),
-        count: json["count"],
-        createdAt: DateTime.parse(json["createdAt"]),
-        updatedAt: DateTime.parse(json["updatedAt"]),
-        v: json["__v"],
-    );
-
-    Map<String, dynamic> toJson() => {
-        "_id": id,
-        "technicianId": technicianId,
-        "productId": productId.toJson(),
-        "count": count,
-        "createdAt": createdAt.toIso8601String(),
-        "updatedAt": updatedAt.toIso8601String(),
-        "__v": v,
-    };
+  factory InventoryItem.fromJson(Map<String, dynamic> json) => InventoryItem(
+        id: json["_id"].toString(),
+        technicianId: json["technicianId"].toString(),
+        productId: Product.fromJson(json["productId"]),
+        count: json["count"] is int
+            ? json["count"]
+            : int.tryParse(json["count"].toString()) ?? 0,
+      );
 }
 
-class ProductId {
-    String id;
-    String productName;
-    String quantity;
-    bool stock;
-    DateTime createdAt;
-    DateTime updatedAt;
-    int v;
-    int price;
+class Product {
+  String id;
+  String productName;
+  int quantity;
+  int price;
 
-    ProductId({
-        required this.id,
-        required this.productName,
-        required this.quantity,
-        required this.stock,
-        required this.createdAt,
-        required this.updatedAt,
-        required this.v,
-        required this.price,
-    });
+  Product({
+    required this.id,
+    required this.productName,
+    required this.quantity,
+    required this.price,
+  });
 
-    factory ProductId.fromJson(Map<String, dynamic> json) => ProductId(
-        id: json["_id"],
-        productName: json["productName"],
-        quantity: json["quantity"],
-        stock: json["stock"],
-        createdAt: DateTime.parse(json["createdAt"]),
-        updatedAt: DateTime.parse(json["updatedAt"]),
-        v: json["__v"],
-        price: json["price"],
-    );
-
-    Map<String, dynamic> toJson() => {
-        "_id": id,
-        "productName": productName,
-        "quantity": quantity,
-        "stock": stock,
-        "createdAt": createdAt.toIso8601String(),
-        "updatedAt": updatedAt.toIso8601String(),
-        "__v": v,
-        "price": price,
-    };
+  factory Product.fromJson(Map<String, dynamic> json) => Product(
+        id: json["_id"].toString(),
+        productName: json["productName"].toString(),
+        quantity: json["quantity"] is int
+            ? json["quantity"]
+            : int.tryParse(json["quantity"].toString()) ?? 0,
+        price: json["price"] is int
+            ? json["price"]
+            : int.tryParse(json["price"].toString()) ?? 0,
+      );
 }
+

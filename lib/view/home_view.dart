@@ -1,74 +1,43 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tech_app/core/constants/app_colors.dart';
+import 'package:tech_app/model/StatusFilter_Model.dart';
+import 'package:tech_app/provider/service_list_provider.dart';
+import 'package:tech_app/routes/route_name.dart';
 import 'package:tech_app/widgets/card/income_cart.dart';
-import 'package:tech_app/widgets/card/request_cart.dart';
+
 import 'package:tech_app/widgets/header.dart';
 
-// 🔹 TEMP MODELS (remove when API ready)
-class IncomeModel {}
-class RequestModel {}
-
-class HomeView extends StatefulWidget {
+class HomeView extends ConsumerStatefulWidget {
   const HomeView({super.key});
 
   @override
-  State<HomeView> createState() => _HomeViewState();
+  ConsumerState<HomeView> createState() => _HomeViewState();
 }
 
-class _HomeViewState extends State<HomeView> {
+class _HomeViewState extends ConsumerState<HomeView> {
   int selectedIndex = 0;
 
-  // sATIC LIST DATA (replace with API later)
-  List<IncomeModel> incomeList =
-      List.generate(7, (index) => IncomeModel());
-
-  List<RequestModel> completedList =
-      List.generate(1, (index) => RequestModel());
-
   //  FILTER TITLES
-final List<String> filters = [
-  'All',
-  'New',
-  'Accepted',
-  'Pending',
-  'Completed',
-  'Cancelled',
-];
-
-
-  //  FILTER CHECK
-  bool get isCompletedSelected =>
-      filters[selectedIndex] == 'Completed';
-
-  //  STATIC COUNTS
-  String getFilterCount(String title) {
-    switch (title) {
-      case 'All':
-        return (incomeList.length + completedList.length).toString();
-      case 'New':
-        return '2';
-      case 'Accepted':
-        return '4';
-      case 'Pending':
-        return '4';
-      case 'Completed':
-        return completedList.length.toString();
-      case 'Cancelled':
-        return '3';
-      default:
-        return '0';
-    }
-  }
+  final List<StatusFilter> filters = const [
+    StatusFilter('All', 'all'),
+    StatusFilter('Accepted', 'accepted'),
+    StatusFilter('In-progress', 'in-progress'),
+    StatusFilter('Pending', 'pending'),
+    StatusFilter('Completed', 'completed'),
+    StatusFilter('Rejected', 'rejected'),
+  ];
 
   @override
   Widget build(BuildContext context) {
+    final serviceList = ref.watch(serviceListProvider);
     return Scaffold(
-   
       body: SafeArea(
         child: Column(
           children: [
             const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 15, ),
+              padding: EdgeInsets.symmetric(horizontal: 15),
               child: Header(title: "Income Request"),
             ),
 
@@ -87,10 +56,14 @@ final List<String> filters = [
                   final isSelected = selectedIndex == index;
 
                   return InkWell(
-                    onTap: () {
-                      setState(() {
-                        selectedIndex = index;
-                      });
+                    onTap: () async {
+                      if (selectedIndex == index) return;
+
+                      setState(() => selectedIndex = index);
+
+                      await ref
+                          .read(serviceListProvider.notifier)
+                          .fetchServiceByStatus(filter.value);
                     },
                     child: Container(
                       margin: const EdgeInsets.only(right: 10),
@@ -100,42 +73,42 @@ final List<String> filters = [
                             ? AppColors.primary_clr
                             : Colors.white,
                         borderRadius: BorderRadius.circular(25),
-                        border: Border.all(
-                          color: AppColors.scoundry_clr,
-                        ),
+                        border: Border.all(color: AppColors.scoundry_clr),
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            filter,
+                            filter.label,
                             style: const TextStyle(
                               fontSize: 13,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
                           const SizedBox(width: 8),
-                          Container(
-                            height: 20,
-                            width: 20,
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: isSelected
-                                  ? Colors.white
-                                  : AppColors.primary_clr,
-                            ),
-                            child: Text(
-                              getFilterCount(filter),
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w600,
-                                color: isSelected
-                                    ? AppColors.scoundry_clr
-                                    : Colors.white,
-                              ),
-                            ),
-                          ),
+                          // Container(
+                          //   height: 20,
+                          //   width: 20,
+                          //   alignment: Alignment.center,
+                          //   decoration: BoxDecoration(
+                          //     shape: BoxShape.circle,
+                          //     color: isSelected
+                          //         ? Colors.white
+                          //         : AppColors.primary_clr,
+                          //   ),
+                          //   child: Text(
+                          //     serviceList.asData?.value?.data.length
+                          //             .toString() ??
+                          //         '0',
+                          //     style: TextStyle(
+                          //       fontSize: 12,
+                          //       fontWeight: FontWeight.w600,
+                          //       color: isSelected
+                          //           ? AppColors.scoundry_clr
+                          //           : Colors.white,
+                          //     ),
+                          //   ),
+                          // ),
                         ],
                       ),
                     ),
@@ -146,11 +119,55 @@ final List<String> filters = [
 
             const SizedBox(height: 20),
 
-            //  LIST VIEW SWITCH
             Expanded(
-              child: isCompletedSelected
-                  ? _buildCompletedList()
-                  : _buildIncomeList(),
+              child: serviceList.when(
+                data: (data) {
+                  if (data == null || data.data.isEmpty) {
+                    return const Center(child: Text("No requests found"));
+                  }
+
+                  return ListView.builder(
+                    itemCount: data.data.length,
+                    itemBuilder: (context, index) {
+                      final item = data.data[index];
+
+                      // Choose widget based on serviceStatus
+                      if (item.serviceStatus.toLowerCase() == 'completed') {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 15,
+                            vertical: 10,
+                          ),
+                          child: Text("completed"),
+                        );
+                      } else {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 15,
+                            vertical: 10,
+                          ),
+                          child: IncomeCard(
+                            name: item.userId.basicInfo.fullName,
+                            service: item.serviceId.name,
+                            issue: item.issuesId.issue,
+                            schedule: item.scheduleService.toString(),
+                            // status: item.serviceStatus,
+                            assignmentStatus:item.assignmentStatus,
+                            onClick: () {
+                              context.push(
+                                RouteName.service_card,
+                                extra: item, // send the full item to next page
+                              );
+                            },
+                          ),
+                        );
+                      }
+                    },
+                  );
+                },
+                loading: () => const Center(child: CircularProgressIndicator()),
+                error: (err, st) => Center(child: Text("Error: $err")),
+              ),
             ),
           ],
         ),
@@ -159,36 +176,39 @@ final List<String> filters = [
   }
 
   //  INCOME LIST
-  Widget _buildIncomeList() {
-    if (incomeList.isEmpty) {
-      return const Center(child: Text("No Income Requests"));
-    }
+  // Widget _buildIncomeList() {
+  //   if (serviceList.isEmpty) {
+  //     return const Center(child: Text("No Income Requests"));
+  //   }
 
-    return ListView.builder(
-      itemCount: incomeList.length,
-      itemBuilder: (context, index) {
-        return const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-          child: IncomeCard(),
-        );
-      },
-    );
-  }
+  //   return serviceList.when(
+  //      data
+  //   )
+  //   ListView.builder(
+  //     itemCount: incomeList.length,
+  //     itemBuilder: (context, index) {
+  //       return const Padding(
+  //         padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+  //         child: IncomeCard(),
+  //       );
+  //     },
+  //   );
+  // }
 
   //  COMPLETED LIST
-  Widget _buildCompletedList() {
-    if (completedList.isEmpty) {
-      return const Center(child: Text("No Completed Requests"));
-    }
+  //   Widget _buildCompletedList() {
+  //     if (completedList.isEmpty) {
+  //       return const Center(child: Text("No Completed Requests"));
+  //     }
 
-    return ListView.builder(
-      itemCount: completedList.length,
-      itemBuilder: (context, index) {
-        return const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-          child: RequestCart(),
-        );
-      },
-    );
-  }
+  //     return ListView.builder(
+  //       itemCount: completedList.length,
+  //       itemBuilder: (context, index) {
+  //         return const Padding(
+  //           padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+  //           child: RequestCart(service: '',),
+  //         );
+  //       },
+  //     );
+  //   }
 }

@@ -9,6 +9,8 @@ class AppTextField extends StatelessWidget {
   final TextEditingController? controller;
   final String? Function(String?)?validator;
   final int? maxLines;
+  final bool readOnly;
+  final bool enabled;
   const AppTextField({
     super.key,
     required this.label,
@@ -16,7 +18,10 @@ class AppTextField extends StatelessWidget {
     this.surfixIcon,
     this.isPassword = false,
      this.controller, 
-      this.validator, this.maxLines, 
+      this.validator, 
+      this.maxLines,
+       this.enabled = true,
+        this.readOnly = false, 
   
   });
 
@@ -27,6 +32,8 @@ class AppTextField extends StatelessWidget {
       controller: controller,
       validator: validator,
       keyboardType: keyboardType,
+            readOnly: readOnly,
+      enabled: enabled,
       maxLines: maxLines ?? 1,
       obscureText: isPassword? _obscure :false,
       decoration: InputDecoration(

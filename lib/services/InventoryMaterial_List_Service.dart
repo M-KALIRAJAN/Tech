@@ -14,8 +14,8 @@ class InventorymaterialListService {
 
       return InventoryMaterial.fromJson(response.data);
     } on DioException catch (e) {
-      debugPrint("❌ DIO ERROR: ${e.response?.data}");
-      debugPrint("❌ STATUS CODE: ${e.response?.statusCode}");
+      debugPrint(" DIO ERROR: ${e.response?.data}");
+      debugPrint(" STATUS CODE: ${e.response?.statusCode}");
       final message =
           e.response?.data['message']?.toString() ?? "No Inventory List";
       throw message;

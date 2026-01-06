@@ -2,7 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:tech_app/core/constants/app_colors.dart';
 
 class MaterialCart extends StatelessWidget {
-  const MaterialCart({super.key});
+  final String productName;
+  final int count;
+  final int price;
+
+  const MaterialCart({
+    super.key,
+    required this.productName,
+    required this.count,
+    required this.price,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -16,6 +25,7 @@ class MaterialCart extends StatelessWidget {
       ),
       child: Row(
         children: [
+       
           Container(
             height: 47,
             width: 47,
@@ -31,59 +41,51 @@ class MaterialCart extends StatelessWidget {
 
           const SizedBox(width: 12),
 
-        
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
-                Text(
-                  "Hydraulic Fluid",
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                SizedBox(height: 2),
-                Text(
-                  "(HV-46)",
-                  style: TextStyle(
+          
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                productName,
+                style:
+                    const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+              ),
+              const SizedBox(height: 4),
+              Text.rich(
+                TextSpan(
+                  text: "Count: ", 
+                  style: const TextStyle(
                     fontSize: 12,
-                    color: Colors.black54,
+                    color: Colors.black87,
+                    fontWeight: FontWeight.w500,
                   ),
+                  children: [
+                    TextSpan(
+                      text: "$count", 
+                      style: const TextStyle(
+                        color: Colors.green,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const TextSpan(
+                      text: " | Price: ",
+                      style: TextStyle(
+                        color: Colors.black87,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    TextSpan(
+                      text: "$price", 
+                      style: const TextStyle(
+                        color: Colors.green,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
                 ),
-                SizedBox(height: 4),
-                Text.rich(
-  TextSpan(
-    children: [
-      TextSpan(
-        text: "Quantity: ",
-        style: TextStyle(
-          fontSize: 12,
-          color: Colors.black54,
-        ),
-      ),
-      TextSpan(
-        text: "25",
-        style: TextStyle(
-          fontSize: 14,
-          color: AppColors.primary_clr,
-          fontWeight: FontWeight.w600,
-        ),
-      ),
-    ],
-  ),
-),
-
-                
-              ],
-            ),
-          ),
-
-       
-          const Icon(
-            Icons.chevron_right,
-            color: Colors.black45,
+              ),
+            ],
           ),
         ],
       ),

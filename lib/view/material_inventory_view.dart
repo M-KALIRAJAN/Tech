@@ -5,6 +5,7 @@ import 'package:tech_app/model/Inventory_Material_Model.dart';
 import 'package:tech_app/routes/route_name.dart';
 import 'package:tech_app/services/InventoryMaterial_List_Service.dart';
 import 'package:tech_app/widgets/card/material_cart.dart';
+import 'package:tech_app/widgets/card/shimmer_loader.dart';
 import 'package:tech_app/widgets/header.dart';
 import 'package:tech_app/widgets/inputs/primary_button.dart';
 
@@ -18,20 +19,29 @@ class MaterialInventoryView extends StatefulWidget {
 class _MaterialInventoryViewState extends State<MaterialInventoryView> {
   final InventorymaterialListService _inventorymaterialList =
       InventorymaterialListService();
-  InventoryMaterial? inventoryMaterial;
-  Future<void> fetchInventory() async {
-    final response = await _inventorymaterialList.InventoryList();
 
-    debugPrint("API DATA: ${response.data}");
-    setState(() {
-      inventoryMaterial = response;
-    });
-  }
+  InventoryMaterial? inventoryMaterial;
+  bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
     fetchInventory();
+  }
+
+  Future<void> fetchInventory() async {
+    try {
+      final response = await _inventorymaterialList.InventoryList();
+      setState(() {
+        inventoryMaterial = response;
+        isLoading = false;
+      });
+    } catch (e) {
+      debugPrint("❌ ERROR fetching inventory: $e");
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   @override
@@ -42,14 +52,62 @@ class _MaterialInventoryViewState extends State<MaterialInventoryView> {
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: Header(title: "Material Inventory", showRefreshIcon: true),
+              child: Header(
+                title: "Material Inventory",
+                showRefreshIcon: true,
+              ),
             ),
 
             const Divider(),
             const SizedBox(height: 10),
-            MaterialCart(),
+
+            // LOADING STATE
+            if (isLoading)
+              Expanded(
+                child: ListView.builder(
+                  itemCount: 6,
+                  itemBuilder: (context, index) {
+                    return const ShimmerLoader(
+                      height: 87,
+                      width: double.infinity,
+                    );
+                  },
+                ),
+              )
+
+            /// 🔹 EMPTY STATE
+            else if (inventoryMaterial == null ||
+                inventoryMaterial!.data.isEmpty)
+              const Expanded(
+                child: Center(
+                  child: Text("No inventory found."),
+                ),
+              )
+
+            
+            else
+              Expanded(
+                child: ListView.builder(
+                  itemCount: inventoryMaterial!.data.length,
+                  itemBuilder: (context, index) {
+                    final item = inventoryMaterial!.data[index];
+
+                    final productName =
+                        item.productId?.productName ?? "N/A";
+                    final price = item.productId?.price ?? 0;
+                    final count = item.count;
+
+                    return MaterialCart(
+                      productName: productName,
+                      count: count,
+                      price: price,
+                    );
+                  },
+                ),
+              ),
 
             const SizedBox(height: 15),
+
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: PrimaryButton(
