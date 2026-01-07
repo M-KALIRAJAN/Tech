@@ -2,21 +2,22 @@ import 'package:flutter/material.dart';
 
 import 'package:tech_app/core/constants/app_colors.dart';
 
-
 class IncomeCard extends StatelessWidget {
-    final String name;
+  final String name;
   final String service;
   final String issue;
   final String schedule;
   final String assignmentStatus;
   final VoidCallback onClick;
-  const IncomeCard({super.key, 
-  required this.name,
-   required this.service, 
-   required this.issue,
-    required this.schedule, 
-    required this.assignmentStatus, 
-    required this.onClick});
+  const IncomeCard({
+    super.key,
+    required this.name,
+    required this.service,
+    required this.issue,
+    required this.schedule,
+    required this.assignmentStatus,
+    required this.onClick,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +33,7 @@ class IncomeCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           InkWell(
-            onTap:onClick,
+            onTap: onClick,
             child: Container(
               height: 55,
               padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -44,7 +45,7 @@ class IncomeCard extends StatelessWidget {
                 ),
               ),
               child: Row(
-                children:  [
+                children: [
                   Expanded(
                     child: Text(
                       issue,
@@ -61,37 +62,29 @@ class IncomeCard extends StatelessWidget {
               ),
             ),
           ),
-
           const SizedBox(height: 12),
-
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Column(
               children: [
-                _infoRow(icon: Icons.person, text: name),
-                const SizedBox(height: 8),
-
+                _infoRow(image: Image.asset("assets/images/person.png"), text: name),
+                const SizedBox(height: 5),
                 _infoRow(
-                  icon: Icons.pages,
+                  image: Image.asset("assets/images/expect.png"),
                   text: service,
                   iconBg: const Color.fromARGB(156, 169, 227, 212),
                 ),
+                const SizedBox(height: 5),
+                _infoRow( image: Image.asset("assets/images/clock.png"), text: schedule),
                 const SizedBox(height: 8),
-
-                _infoRow(
-                  icon: Icons.local_activity,
-                  text: schedule,
-                ),
-
-                const SizedBox(height: 12),
                 Row(
                   children: [
                     _iconBox(
-                      icon: Icons.pages,
+                      image: Image.asset("assets/images/distance.png"),
                       bgColor: const Color.fromARGB(156, 169, 227, 212),
                     ),
                     const SizedBox(width: 10),
-                     Expanded(
+                    Expanded(
                       child: Text("8km", style: TextStyle(fontSize: 14)),
                     ),
                     Container(
@@ -100,10 +93,12 @@ class IncomeCard extends StatelessWidget {
                         vertical: 6,
                       ),
                       decoration: BoxDecoration(
-                        color: AppColors.new_clr,
+                        color: assignmentStatus == "pending" ? AppColors.new_clr
+                         :  assignmentStatus == "rejected" ? Colors.red 
+                         : AppColors.primary_clr,
                         borderRadius: BorderRadius.circular(30),
                       ),
-                      child:  Text(
+                      child: Text(
                         assignmentStatus,
                         style: TextStyle(
                           color: Colors.white,
@@ -117,22 +112,21 @@ class IncomeCard extends StatelessWidget {
               ],
             ),
           ),
-
           const SizedBox(height: 16),
         ],
       ),
     );
   }
 
-  // ---------- REUSABLE ROW ----------
+  // -------- REUSABLE ROW --------
   static Widget _infoRow({
-    required IconData icon,
+    required Image image,
     required String text,
     Color? iconBg,
   }) {
     return Row(
       children: [
-        _iconBox(icon: icon, bgColor: iconBg),
+        _iconBox(image: image, bgColor: iconBg),
         const SizedBox(width: 10),
         Expanded(
           child: Text(
@@ -145,21 +139,15 @@ class IncomeCard extends StatelessWidget {
     );
   }
 
-  static Widget _iconBox({required IconData icon, Color? bgColor}) {
+  static Widget _iconBox({required Image image, Color? bgColor}) {
     return Container(
-      height: 30,
-      width: 30,
+      height: 40,
+      width: 40,
       decoration: BoxDecoration(
         color: bgColor,
         borderRadius: BorderRadius.circular(6),
       ),
-      child: Icon(icon, size: 18),
+      child:image,
     );
   }
 }
-
-
-
-
-
-

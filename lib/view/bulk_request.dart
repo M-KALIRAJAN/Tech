@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tech_app/core/constants/app_colors.dart';
+import 'package:tech_app/core/utils/snackbar_helper.dart';
 import 'package:tech_app/model/Inventory_Material_Model.dart';
+import 'package:tech_app/routes/route_name.dart';
+import 'package:tech_app/services/MaterialRequest_service.dart';
 import 'package:tech_app/services/ProductList.dart';
 import 'package:tech_app/widgets/inputs/app_dropdown.dart';
 import 'package:tech_app/widgets/inputs/app_text_field.dart';
@@ -14,10 +18,17 @@ class BulkRequest extends StatefulWidget {
 }
 
 class _BulkRequestState extends State<BulkRequest> {
-  final Productlist _productlist = Productlist();
 
+  final Productlist _productlist = Productlist();
+  bool isLoading = false;
   List<Product> products = []; // master product list
-  List<Product?> materialSelections = [null]; // cards list
+
+  final MaterialrequestService _materialrequestService =
+      MaterialrequestService();
+
+List<MaterialSelection> materialSelections = [
+  MaterialSelection(quantityController: TextEditingController()),
+];
 
   @override
   void initState() {
@@ -31,6 +42,48 @@ class _BulkRequestState extends State<BulkRequest> {
       products = result;
     });
   }
+Future<void> submitrequest() async {
+  try {
+    setState(() => isLoading = true);
+
+    final List<Map<String, dynamic>> requests = [];
+
+    for (final item in materialSelections) {
+      if (item.product == null ||
+          item.quantityController.text.isEmpty) {
+        throw "Please fill all materials";
+      }
+
+      requests.add({
+        "productId": item.product!.id,
+        "quantity": int.parse(item.quantityController.text),
+      });
+    }
+
+    final payload = {
+      "requests": requests,
+    };
+
+    await _materialrequestService.fetchmaterialrequest(
+      payload: payload,
+    );
+
+    SnackbarHelper.show(
+      context,
+      backgroundColor: AppColors.scoundry_clr,
+      message: "Material requests submitted successfully",
+    );
+     context.push(RouteName.inventory_list);
+  } catch (e) {
+    SnackbarHelper.show(
+      context,
+      backgroundColor: Colors.red,
+      message: e.toString(),
+    );
+  } finally {
+    setState(() => isLoading = false);
+  }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -46,15 +99,33 @@ class _BulkRequestState extends State<BulkRequest> {
 
               PrimaryButton(
                 radius: 12,
+                color: AppColors.primary_clr,
+                height: 55,
+                Width: double.infinity,
+                onPressed: () {
+  setState(() {
+    materialSelections.add(
+      MaterialSelection(
+        quantityController: TextEditingController(),
+      ),
+    );
+  });
+},
+
+                text: "Add New Material",
+                 icon: Icon(Icons.add ,size: 25,color: Colors.white,),
+              ),
+              const SizedBox(height: 10,),
+               PrimaryButton(
+                radius: 12,
                 color: AppColors.scoundry_clr,
                 height: 55,
                 Width: double.infinity,
                 onPressed: () {
-                  setState(() {
-                    materialSelections.add(null); //  add new card
-                  });
+                   submitrequest();
                 },
-                text: "Add New Material",
+                text: "Submit Request",
+                
               ),
             ],
           ),
@@ -64,6 +135,7 @@ class _BulkRequestState extends State<BulkRequest> {
   }
 
   Widget materialCard(int index) {
+     final selection = materialSelections[index];
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       width: double.infinity,
@@ -119,20 +191,15 @@ class _BulkRequestState extends State<BulkRequest> {
                 AppDropdown(
                   label: "Select Product",
                   items: products.map((e) => e.productName).toList(),
-                  value: materialSelections[index]?.productName,
+                  value: selection.product?.productName,
                   onChanged: (value) {
                     final product = products.firstWhere(
                       (e) => e.productName == value,
                     );
-                    setState(() {
-                      materialSelections[index] = product;
-                    });
-                    debugPrint(
-                      "materialSelections ${materialSelections[index]?.productName}",
-                    );
-                    debugPrint(
-                      "materialSelections  id${materialSelections[index]?.id}",
-                    );
+                     setState(() {
+              selection.product = product;
+            });
+                   
                   },
                   validator: (value) =>
                       value == null ? "Please select product" : null,
@@ -144,7 +211,8 @@ class _BulkRequestState extends State<BulkRequest> {
 
                 AppTextField(
                   label: "e.g 25",
-                  keyboardType: TextInputType.number,
+                     controller: selection.quantityController,
+                    keyboardType: TextInputType.number,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return "Enter quantity";
@@ -159,4 +227,17 @@ class _BulkRequestState extends State<BulkRequest> {
       ),
     );
   }
+
+  
 }
+
+class MaterialSelection {
+  Product? product;
+  TextEditingController quantityController;
+
+  MaterialSelection({
+    this.product,
+    required this.quantityController,
+  });
+}
+

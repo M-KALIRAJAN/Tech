@@ -8,29 +8,26 @@ import 'package:tech_app/model/ServiceList _Model.dart';
 class ServicerequestCart extends StatefulWidget {
   final Datum data; // 👈 STRONG TYPE
 
-  const ServicerequestCart({
-    super.key,
-    required this.data,
-  });
+  const ServicerequestCart({super.key, required this.data});
 
   @override
   State<ServicerequestCart> createState() => _ServicerequestCartState();
 }
 
 class _ServicerequestCartState extends State<ServicerequestCart> {
-
   @override
   Widget build(BuildContext context) {
     final _acceptrequestService = AcceptrequestService();
-    Future<void> acceptrequest() async{
-        try{
-          final assignmentId = widget.data.id;
-           final result = await _acceptrequestService.acceptrequest(assignmentId);
-             SnackbarHelper.show(context, backgroundColor: AppColors.scoundry_clr,message:"Service accepted");
-             
-        }catch(e){
-          
-        }
+    Future<void> acceptrequest() async {
+      try {
+        final assignmentId = widget.data.id;
+        final result = await _acceptrequestService.acceptrequest(assignmentId);
+        SnackbarHelper.show(
+          context,
+          backgroundColor: AppColors.scoundry_clr,
+          message: "Service accepted",
+        );
+      } catch (e) {}
     }
 
     return Scaffold(
@@ -94,7 +91,10 @@ class _ServicerequestCartState extends State<ServicerequestCart> {
                       padding: const EdgeInsets.all(16),
                       child: Column(
                         children: [
-                          _infoRow("Name", widget.data.userId.basicInfo.fullName),
+                          _infoRow(
+                            "Name",
+                            widget.data.userId.basicInfo.fullName,
+                          ),
                           const Divider(),
                           _infoRow("Email", widget.data.userId.basicInfo.email),
                           const Divider(),
@@ -200,13 +200,9 @@ class _ServicerequestCartState extends State<ServicerequestCart> {
                       padding: const EdgeInsets.all(16),
                       child: Column(
                         children: [
-                          _infoRow(
-                              "Service Type", widget.data.serviceId.name),
+                          _infoRow("Service Type", widget.data.serviceId.name),
                           const Divider(),
-                          _infoRow(
-                            "Description",
-                            widget.data.feedback ?? "",
-                          ),
+                          _infoRow("Description", widget.data.feedback ?? ""),
                           const Divider(),
                           _infoRow(
                             "Date Required",
@@ -256,7 +252,21 @@ class _ServicerequestCartState extends State<ServicerequestCart> {
                   ),
                 ),
               ],
-
+              if (widget.data.assignmentStatus == "accepted") ...[
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: PrimaryButton(
+                    radius: 13,
+                    height: 50,
+                    Width: double.infinity,
+                    color: AppColors.scoundry_clr,
+                    onPressed: () {
+                      
+                    },
+                    text: "Start Work",
+                  ),
+                ),
+              ],
               const SizedBox(height: 10),
             ],
           ),
@@ -281,8 +291,7 @@ class _ServicerequestCartState extends State<ServicerequestCart> {
               textAlign: TextAlign.right,
               overflow: TextOverflow.ellipsis,
               maxLines: 5,
-              style:
-                  const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
             ),
           ),
         ],
@@ -312,8 +321,7 @@ class _ServicerequestCartState extends State<ServicerequestCart> {
             children: [
               const Text(
                 "Reject Reason",
-                style:
-                    TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
               ),
               const SizedBox(height: 12),
               TextField(

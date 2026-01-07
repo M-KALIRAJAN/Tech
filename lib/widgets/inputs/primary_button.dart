@@ -8,7 +8,7 @@ class PrimaryButton extends StatelessWidget {
   final VoidCallback? onPressed;
   final String text;
   final bool? isLoading;
-
+  final Icon? icon;
   const PrimaryButton({
     super.key,
     this.height,
@@ -18,6 +18,7 @@ class PrimaryButton extends StatelessWidget {
     required this.onPressed,
     required this.text,
     this.isLoading = false,
+    this.icon ,
   });
 
   @override
@@ -42,12 +43,21 @@ class PrimaryButton extends StatelessWidget {
                   color: Colors.white,
                 ),
               )
-            : Text(
-                text,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600,
-                ),
+            : Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  if (icon != null) ...[
+      icon!,
+      const SizedBox(width: 8),
+    ],
+                  Text(
+                    text,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
               ),
       ),
     );

@@ -5,19 +5,11 @@ import 'package:tech_app/core/network/dio_client.dart';
 class MaterialrequestService {
   final _dio = DioClient.dio;
   Future<void> fetchmaterialrequest({
-    required String productId,
-    required int quantity,
+  required Map<String, dynamic> payload
+
   }) async {
     try {
-      final payload = {
-        "requests": [
-          {
-            "productId": productId,
-            "quantity": quantity,
-          }
-        ]
-      };
-
+    
       final response = await _dio.post(
         'material/bulk-request',
         data: payload,

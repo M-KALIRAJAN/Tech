@@ -47,9 +47,17 @@ class _MaterialRequestState extends State<MaterialRequest> {
       setState(() {
         isLoading = true;
       });
+     final payload = <String, dynamic>{
+  "requests": [
+    {
+      "productId": selectedProduct!.id,
+      "quantity": quantity,
+    }
+  ]
+};
+
       final result = await _materialrequestService.fetchmaterialrequest(
-        productId: selectedProduct!.id,
-        quantity: quantity,
+        payload: payload,
       );
       setState(() {
         isLoading = false;
@@ -130,13 +138,14 @@ class _MaterialRequestState extends State<MaterialRequest> {
 
                   PrimaryButton(
                     radius: 12,
-                    color: AppColors.scoundry_clr,
+                    color: AppColors.primary_clr,
                     Width: double.infinity,
                     height: 50,
                     onPressed: () {
                       context.push(RouteName.bulk_request);
                     },
                     text: "Add Bulk Request",
+                    icon: Icon(Icons.add ,size: 25,color: Colors.white,),
                   ),
                   const SizedBox(height: 20),
                   PrimaryButton(
