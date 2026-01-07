@@ -5,11 +5,7 @@ class Header extends StatelessWidget {
   final String title;
   final bool showRefreshIcon;
 
-  const Header({
-    super.key,
-    required this.title,
-    this.showRefreshIcon = false,
-  });
+  const Header({super.key, required this.title, this.showRefreshIcon = false});
 
   @override
   Widget build(BuildContext context) {
@@ -19,26 +15,23 @@ class Header extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           // Back button
-          Container(
-            height: 38,
-            width: 38,
-            decoration: const BoxDecoration(
-              shape: BoxShape.circle,
-              color: Color.fromRGBO(183, 213, 205, 1),
-            ),
-            child: const Icon(
-              Icons.arrow_back_rounded,
-              color: Colors.white,
-            ),
-          ),
+          // Container(
+          //   height: 38,
+          //   width: 38,
+          //   decoration: const BoxDecoration(
+          //     shape: BoxShape.circle,
+          //     color: Color.fromRGBO(183, 213, 205, 1),
+          //   ),
+          //   child: const Icon(
+          //     Icons.arrow_back_rounded,
+          //     color: Colors.white,
+          //   ),
+          // ),
 
           // Title
           Text(
             title,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
 
           // Right icon
@@ -82,10 +75,7 @@ class Header extends StatelessWidget {
                           color: Colors.white,
                         ),
                         alignment: Alignment.center,
-                        child: const Text(
-                          "0",
-                          style: TextStyle(fontSize: 12),
-                        ),
+                        child: const Text("0", style: TextStyle(fontSize: 12)),
                       ),
                     ),
                   ],
@@ -95,4 +85,3 @@ class Header extends StatelessWidget {
     );
   }
 }
-

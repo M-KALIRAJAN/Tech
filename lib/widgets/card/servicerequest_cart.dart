@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:tech_app/core/constants/app_colors.dart';
+import 'package:tech_app/core/utils/snackbar_helper.dart';
+import 'package:tech_app/services/AcceptRequest_Service.dart';
 import 'package:tech_app/widgets/inputs/primary_button.dart';
 import 'package:tech_app/model/ServiceList _Model.dart';
 
-class ServicerequestCart extends StatelessWidget {
-final Datum data; // 👈 STRONG TYPE
+class ServicerequestCart extends StatefulWidget {
+  final Datum data; // 👈 STRONG TYPE
 
   const ServicerequestCart({
     super.key,
@@ -12,7 +14,25 @@ final Datum data; // 👈 STRONG TYPE
   });
 
   @override
+  State<ServicerequestCart> createState() => _ServicerequestCartState();
+}
+
+class _ServicerequestCartState extends State<ServicerequestCart> {
+
+  @override
   Widget build(BuildContext context) {
+    final _acceptrequestService = AcceptrequestService();
+    Future<void> acceptrequest() async{
+        try{
+          final assignmentId = widget.data.id;
+           final result = await _acceptrequestService.acceptrequest(assignmentId);
+             SnackbarHelper.show(context, backgroundColor: AppColors.scoundry_clr,message:"Service accepted");
+             
+        }catch(e){
+          
+        }
+    }
+
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -20,7 +40,6 @@ final Datum data; // 👈 STRONG TYPE
             children: [
               Container(
                 margin: const EdgeInsets.all(12),
-
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(15),
@@ -75,15 +94,18 @@ final Datum data; // 👈 STRONG TYPE
                       padding: const EdgeInsets.all(16),
                       child: Column(
                         children: [
-                          _infoRow("Name", data.userId.basicInfo.fullName),
+                          _infoRow("Name", widget.data.userId.basicInfo.fullName),
                           const Divider(),
-                          _infoRow("Email", data.userId.basicInfo.email),
+                          _infoRow("Email", widget.data.userId.basicInfo.email),
                           const Divider(),
-                          _infoRow("Phone", "+973 ${data.userId.basicInfo.mobileNumber}"),
+                          _infoRow(
+                            "Phone",
+                            "+973 ${widget.data.userId.basicInfo.mobileNumber}",
+                          ),
                           const Divider(),
                           _infoRow(
                             "Address",
-                            "building ${data.address.building} , floor ${data.address.floor}, aptNo ${data.address.aptNo}",
+                            "building ${widget.data.address.building} , floor ${widget.data.address.floor}, aptNo ${widget.data.address.aptNo}",
                           ),
                           const Divider(),
                           Row(
@@ -96,7 +118,6 @@ final Datum data; // 👈 STRONG TYPE
                                   fontSize: 12,
                                 ),
                               ),
-
                               Container(
                                 height: 90,
                                 width: 200,
@@ -112,7 +133,6 @@ final Datum data; // 👈 STRONG TYPE
                               ),
                             ],
                           ),
-
                           const Divider(),
                           _infoRow("Distane:", "7km"),
                         ],
@@ -123,9 +143,9 @@ final Datum data; // 👈 STRONG TYPE
               ),
 
               const SizedBox(height: 20),
+
               Container(
                 margin: const EdgeInsets.all(12),
-
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(15),
@@ -180,52 +200,63 @@ final Datum data; // 👈 STRONG TYPE
                       padding: const EdgeInsets.all(16),
                       child: Column(
                         children: [
-                          _infoRow("Service Type", data.serviceId.name),
+                          _infoRow(
+                              "Service Type", widget.data.serviceId.name),
                           const Divider(),
                           _infoRow(
                             "Description",
-                            data.feedback ?? "",
+                            widget.data.feedback ?? "",
                           ),
                           const Divider(),
-                          _infoRow("Date Required", data.scheduleService.toIso8601String()),
+                          _infoRow(
+                            "Date Required",
+                            widget.data.scheduleService.toIso8601String(),
+                          ),
                           const Divider(),
                           _infoRow("Time Window", "10:00AM - 12:00Am"),
                           const Divider(),
-                          _infoRow("Date Created", data.createdAt.toIso8601String()),
+                          _infoRow(
+                            "Date Created",
+                            widget.data.createdAt.toIso8601String(),
+                          ),
                         ],
                       ),
                     ),
                   ],
                 ),
               ),
+
               const SizedBox(height: 10),
-              if(data.assignmentStatus == "pending")...[
-Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: PrimaryButton(
-                  radius: 13,
-                  height: 50,
-                  Width: double.infinity,
-                  color: AppColors.scoundry_clr,
-                  onPressed: () {},
-                  text: "Accpect",
+
+              if (widget.data.assignmentStatus == "pending") ...[
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: PrimaryButton(
+                    radius: 13,
+                    height: 50,
+                    Width: double.infinity,
+                    color: AppColors.scoundry_clr,
+                    onPressed: () {
+                      acceptrequest();
+                    },
+                    text: "Accpect",
+                  ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: PrimaryButton(
-                  radius: 13,
-                  height: 50,
-                  Width: double.infinity,
-                  color: Colors.red,
-                  onPressed: () {
-                    _showRejectReasonSheet(context);
-                  },
-                  text: "Rejected",
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: PrimaryButton(
+                    radius: 13,
+                    height: 50,
+                    Width: double.infinity,
+                    color: Colors.red,
+                    onPressed: () {
+                      _showRejectReasonSheet(context);
+                    },
+                    text: "Rejected",
+                  ),
                 ),
-              ),
               ],
-                
+
               const SizedBox(height: 10),
             ],
           ),
@@ -250,7 +281,8 @@ Padding(
               textAlign: TextAlign.right,
               overflow: TextOverflow.ellipsis,
               maxLines: 5,
-              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+              style:
+                  const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
             ),
           ),
         ],
@@ -258,7 +290,6 @@ Padding(
     );
   }
 
-  //Reject
   void _showRejectReasonSheet(BuildContext context) {
     final TextEditingController reasonController = TextEditingController();
     showModalBottomSheet(
@@ -281,10 +312,10 @@ Padding(
             children: [
               const Text(
                 "Reject Reason",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                style:
+                    TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
               ),
               const SizedBox(height: 12),
-
               TextField(
                 controller: reasonController,
                 maxLines: 4,
@@ -293,58 +324,9 @@ Padding(
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(15),
                   ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
-                    borderSide: const BorderSide(color: Colors.grey),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
-                    borderSide: const BorderSide(color: Colors.red, width: 1.5),
-                  ),
                 ),
               ),
               const SizedBox(height: 20),
-              Row(
-                children: [
-                  Expanded(
-                    child: PrimaryButton(
-                      radius: 13,
-                      height: 50,
-                      Width: double.infinity,
-                      color: Colors.grey,
-                      onPressed: () => Navigator.pop(context),
-                      text: "Cancel",
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: PrimaryButton(
-                      radius: 13,
-                      height: 50,
-                      Width: double.infinity,
-                      color: Colors.red,
-                      onPressed: () {
-                        final reason = reasonController.text.trim();
-
-                        if (reason.isEmpty) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text("Please enter rejection reason"),
-                            ),
-                          );
-                          return;
-                        }
-
-                        Navigator.pop(context);
-
-                        // 🔥 CALL REJECT API HERE
-                        debugPrint("Rejected Reason: $reason");
-                      },
-                      text: "Reject",
-                    ),
-                  ),
-                ],
-              ),
             ],
           ),
         );

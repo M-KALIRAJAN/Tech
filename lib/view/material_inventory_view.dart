@@ -93,8 +93,8 @@ class _MaterialInventoryViewState extends State<MaterialInventoryView> {
                     final item = inventoryMaterial!.data[index];
 
                     final productName =
-                        item.productId?.productName ?? "N/A";
-                    final price = item.productId?.price ?? 0;
+                        item.productId.productName ?? "N/A";
+                    final price = item.productId.price ?? 0;
                     final count = item.count;
 
                     return MaterialCart(

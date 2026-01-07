@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:tech_app/core/constants/app_colors.dart';
 import 'package:tech_app/model/StatusFilter_Model.dart';
 import 'package:tech_app/provider/service_list_provider.dart';
 import 'package:tech_app/routes/route_name.dart';
 import 'package:tech_app/widgets/card/income_cart.dart';
+import 'package:tech_app/widgets/card/shimmer_loader.dart';
 
 import 'package:tech_app/widgets/header.dart';
 
@@ -32,6 +34,11 @@ class _HomeViewState extends ConsumerState<HomeView> {
   @override
   Widget build(BuildContext context) {
     final serviceList = ref.watch(serviceListProvider);
+    // ghange data format
+    String formatDate(DateTime date) {
+      return DateFormat('MMMM d, y \'at\' h:mm a').format(date);
+    }
+
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -80,9 +87,12 @@ class _HomeViewState extends ConsumerState<HomeView> {
                         children: [
                           Text(
                             filter.label,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 13,
                               fontWeight: FontWeight.w500,
+                              color: isSelected
+                                  ? Colors.white
+                                  : AppColors.scoundry_clr,
                             ),
                           ),
                           const SizedBox(width: 8),
@@ -150,9 +160,9 @@ class _HomeViewState extends ConsumerState<HomeView> {
                             name: item.userId.basicInfo.fullName,
                             service: item.serviceId.name,
                             issue: item.issuesId.issue,
-                            schedule: item.scheduleService.toString(),
+                            schedule: formatDate(item.scheduleService),
                             // status: item.serviceStatus,
-                            assignmentStatus:item.assignmentStatus,
+                            assignmentStatus: item.assignmentStatus,
                             onClick: () {
                               context.push(
                                 RouteName.service_card,
@@ -165,7 +175,17 @@ class _HomeViewState extends ConsumerState<HomeView> {
                     },
                   );
                 },
-                loading: () => const Center(child: CircularProgressIndicator()),
+                loading: () => ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: 5,
+                  itemBuilder: (context, index) {
+                    return const ShimmerLoader(
+                      height: 140,
+                      width: double.infinity,
+                    );
+                  },
+                ),
                 error: (err, st) => Center(child: Text("Error: $err")),
               ),
             ),
