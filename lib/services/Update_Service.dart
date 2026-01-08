@@ -6,7 +6,32 @@ import 'package:tech_app/core/network/dio_client.dart';
 
 class UpdateService {
   final _dio = DioClient.dio;
+   
+   //service on hold
+   Future<Map<String,dynamic>> fetchonhold({
+    required String userServiceId
+   })async{
+     try{
+          final response = await _dio.post(
+            "techie/hold-work",
+               data: {
+                "userServiceId":userServiceId
+               }
+            );
+            debugPrint("**************fetchonhold ${response.data}");
+            return response.data;
+     }on DioException catch(e){
+      final errorData = e.response?.data;
 
+      final message = errorData is Map<String, dynamic>
+          ? errorData['message'] ?? 'Something went wrong'
+          : errorData.toString();
+
+      throw message;
+     }
+   }
+
+   // Updated Service
   Future<Map<String, dynamic>> fetchupdatedservice({
     required List<File> images,
     required String userServiceId,

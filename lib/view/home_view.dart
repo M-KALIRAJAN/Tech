@@ -151,21 +151,37 @@ class _HomeViewState extends ConsumerState<HomeView> {
                             horizontal: 15,
                             vertical: 10,
                           ),
-                          child: Text("completed"),
-                        );
-                      } else if (item.assignmentStatus.toLowerCase() ==
-                          'accepted') {
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 15,
-                            vertical: 10,
+                          child:  IncomeCard(
+                            name: item.userId.basicInfo.fullName,
+                            service: item.serviceId.name,
+                            issue: item.issuesId.issue,
+                            schedule: formatDate(item.scheduleService),
+                            // status: item.serviceStatus,
+                            assignmentStatus: item.assignmentStatus,
+                            onClick: () {
+                              context.push(
+                                RouteName.service_card,
+                                extra: item, // send the full item to next page
+                              );
+                            },
                           ),
-                          child: UpdateRequestView(
-                            serviceRequestId: item.serviceRequestId,
-                            userServiceId:item.serviceId.id,
-                          ),
                         );
-                      } else if (item.assignmentStatus == 'all') {
+                      } 
+
+                      // else if (item.assignmentStatus.toLowerCase() ==
+                      //     'in-progress') {
+                      //   return Padding(
+                      //     padding: const EdgeInsets.symmetric(
+                      //       horizontal: 15,
+                      //       vertical: 10,
+                      //     ),
+                      //     child: UpdateRequestView(
+                      //       serviceRequestId: item.id,
+                      //       userServiceId:item.serviceId.id,
+                      //     ),
+                      //   );
+                      // }
+                       else {
                         return Padding(
                           padding: const EdgeInsets.symmetric(
                             horizontal: 15,
@@ -186,9 +202,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
                             },
                           ),
                         );
-                      } else {
-                        Text("No");
-                      }
+                      } 
                     },
                   );
                 },

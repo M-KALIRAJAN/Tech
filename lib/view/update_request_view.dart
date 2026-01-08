@@ -1,10 +1,8 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:tech_app/core/constants/app_colors.dart';
-import 'package:tech_app/routes/route_name.dart';
 import 'package:tech_app/services/Update_Service.dart';
 import 'package:tech_app/widgets/inputs/app_text_field.dart';
 import 'package:tech_app/widgets/inputs/primary_button.dart';
@@ -29,7 +27,8 @@ class _UpdateRequestViewState extends State<UpdateRequestView> {
     0,
     1,
   }; // Accepted & In Progress selected by default
-  late Timer _timer;
+  Timer? _timer;
+  bool isOnHold = false;
   int _elapsedSeconds = 0;
   final ImagePicker _picker = ImagePicker();
   List<XFile> selectedImages = [];
@@ -41,24 +40,70 @@ class _UpdateRequestViewState extends State<UpdateRequestView> {
     {"title": "OnHold"},
     {"title": "completed"},
   ];
-
+bool get isCompletedSelected => selectedIndexes.contains(3);
   @override
   void initState() {
     super.initState();
+    selectedIndexes = {0, 1}; // Always selected
     _startTimer();
   }
 
-  void _startTimer() {
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      setState(() {
-        _elapsedSeconds++;
-      });
+void _startTimer() {
+  _timer?.cancel(); // safe
+  _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+    setState(() {
+      _elapsedSeconds++;
     });
-  }
+  });
+}
+
+void _stopTimer() {
+  _timer?.cancel();
+  _timer = null;
+}
+
+void toggleOnHold() async {
+  // Toggle first
+  final bool goingOnHold = !isOnHold;
+
+  setState(() {
+    isOnHold = goingOnHold;
+
+    // Always keep Accepted & In Progress
+    selectedIndexes.addAll({0, 1});
+
+    if (goingOnHold) {
+      // Pause timer
+      _stopTimer();
+
+      // Add OnHold
+      selectedIndexes.add(2);
+    } else {
+      // Resume timer
+      _startTimer();
+
+      // Remove OnHold
+      selectedIndexes.remove(2);
+    }
+  });
+
+  //  CALL API ONLY WHEN GOING ON HOLD (outside setState)
+  // if (goingOnHold) {
+  //   try {
+  //     await _updateService.fetchonhold(
+  //       userServiceId: widget.userServiceId,
+  //     );
+  //   } catch (e) {
+  //     debugPrint("OnHold API error: $e");
+  //   }
+  // }
+}
+
+
 
   @override
   void dispose() {
-    _timer.cancel();
+    _timer?.cancel();
     statustext.dispose();
     super.dispose();
   }
@@ -97,8 +142,9 @@ class _UpdateRequestViewState extends State<UpdateRequestView> {
       );
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Update saved successfully")),
+        const SnackBar(content: Text("Update saved successfully") ,backgroundColor: AppColors.scoundry_clr,),
       );
+      context.pop();
     } catch (e) {
       ScaffoldMessenger.of(
         context,
@@ -167,18 +213,15 @@ class _UpdateRequestViewState extends State<UpdateRequestView> {
                   ),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red,
+                      backgroundColor: isOnHold ? Colors.green : Colors.red,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
-                    onPressed: () {
-                      _timer.cancel(); // Stop timer
-                      setState(() {});
-                    },
-                    child: const Text(
-                      "Stop",
-                      style: TextStyle(color: Colors.white),
+                    onPressed: toggleOnHold,
+                    child: Text(
+                      isOnHold ? "Start" : "On Hold",
+                      style: const TextStyle(color: Colors.white),
                     ),
                   ),
                 ],
@@ -244,9 +287,9 @@ class _UpdateRequestViewState extends State<UpdateRequestView> {
             const Text("Add Notes"),
             const SizedBox(height: 15),
             AppTextField(
-              maxLines: 5,
+              maxLines: 3,
               controller: statustext,
-              label: "HJGFYUGBHJXZGRFYGRHBVYUGFRBXHJGEYGVH",
+              label: "description",
             ),
             const SizedBox(height: 15),
             const Text("Media Upload"),
@@ -265,22 +308,41 @@ class _UpdateRequestViewState extends State<UpdateRequestView> {
             ),
 
             const SizedBox(height: 25),
-            PrimaryButton(
-              radius: 15,
-              Width: double.infinity,
-              color: AppColors.scoundry_clr,
-              onPressed: () {
-                // context.push(RouteName.sparepart_used);
-                SaveUpdates();
-              },
-              text: "Save Updates",
-            ),
+            
+            // PrimaryButton(
+            //   radius: 15,
+            //   Width: double.infinity,
+            //   height: 55,
+            //   color: AppColors.scoundry_clr,
+            //   onPressed: () {
+            //     // context.push(RouteName.sparepart_used);
+            //     SaveUpdates();
+            //   },
+            //   text: "Save Updates",
+            // ),
+
+            isCompletedSelected
+    ? PrimaryButton(
+        radius: 15,
+        Width: double.infinity,
+        height: 55,
+        color: AppColors.scoundry_clr,
+        onPressed: SaveUpdates,
+        text: "Save Updates",
+      )
+    : PrimaryButton(
+        radius: 15,
+        Width: double.infinity,
+        height: 55,
+        color: Colors.grey,
+        onPressed: null, // disabled
+        text: "Save Updates",
+      ),
           ],
         ),
       ),
     );
   }
-
   void showImagePickerSheet(BuildContext context) {
     showModalBottomSheet(
       context: context,

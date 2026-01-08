@@ -4,6 +4,8 @@ import 'package:tech_app/core/constants/app_colors.dart';
 import 'package:tech_app/core/utils/snackbar_helper.dart';
 import 'package:tech_app/services/AcceptRequest_Service.dart';
 import 'package:tech_app/services/StartWork_Service.dart';
+import 'package:tech_app/view/update_request_view.dart';
+import 'package:tech_app/widgets/card/request_cart.dart';
 import 'package:tech_app/widgets/inputs/primary_button.dart';
 import 'package:tech_app/model/ServiceList _Model.dart';
 
@@ -35,8 +37,7 @@ class _ServicerequestCartState extends State<ServicerequestCart> {
     }
 
     Future<void> startwork() async {
-      context.pop();
-      final userServiceId = widget.data.serviceId.id;
+      final userServiceId = widget.data.id;
       try {
         final result = await _startwork.fetchstartwork(userServiceId);
         SnackbarHelper.show(
@@ -59,192 +60,199 @@ class _ServicerequestCartState extends State<ServicerequestCart> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              Container(
-                margin: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(15),
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Colors.black38,
-                      blurRadius: 6,
-                      offset: Offset(0, 3),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  children: [
-                    Container(
-                      height: 55,
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      decoration: BoxDecoration(
-                        color: AppColors.scoundry_clr,
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(15),
-                          topRight: Radius.circular(15),
-                        ),
+              if (widget.data.assignmentStatus != "in-progress" &&
+                  widget.data.assignmentStatus != "completed") ...[
+                Container(
+                  margin: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(15),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Colors.black38,
+                        blurRadius: 6,
+                        offset: Offset(0, 3),
                       ),
-                      child: Row(
-                        children: [
-                          Container(
-                            height: 34,
-                            width: 34,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.white,
-                            ),
-                            child: Icon(
-                              Icons.person,
-                              color: AppColors.scoundry_clr,
-                            ),
+                    ],
+                  ),
+                  child: Column(
+                    children: [
+                      Container(
+                        height: 55,
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        decoration: BoxDecoration(
+                          color: AppColors.scoundry_clr,
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(15),
+                            topRight: Radius.circular(15),
                           ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Text(
-                              "Coustomer Details",
-                              style: TextStyle(
+                        ),
+                        child: Row(
+                          children: [
+                            Container(
+                              height: 34,
+                              width: 34,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
                                 color: Colors.white,
-                                fontWeight: FontWeight.w500,
+                              ),
+                              child: Icon(
+                                Icons.person,
+                                color: AppColors.scoundry_clr,
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Column(
-                        children: [
-                          _infoRow(
-                            "Name",
-                            widget.data.userId.basicInfo.fullName,
-                          ),
-                          const Divider(),
-                          _infoRow("Email", widget.data.userId.basicInfo.email),
-                          const Divider(),
-                          _infoRow(
-                            "Phone",
-                            "+973 ${widget.data.userId.basicInfo.mobileNumber}",
-                          ),
-                          const Divider(),
-                          _infoRow(
-                            "Address",
-                            "building ${widget.data.address.building} , floor ${widget.data.address.floor}, aptNo ${widget.data.address.aptNo}",
-                          ),
-                          const Divider(),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "Loation",
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Text(
+                                "Coustomer Details",
                                 style: TextStyle(
-                                  color: AppColors.lightgray_clr,
-                                  fontSize: 12,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w500,
                                 ),
                               ),
-                              Container(
-                                height: 90,
-                                width: 200,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  color: const Color.fromARGB(
-                                    196,
-                                    189,
-                                    185,
-                                    185,
+                            ),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          children: [
+                            _infoRow(
+                              "Name",
+                              widget.data.userId.basicInfo.fullName,
+                            ),
+                            const Divider(),
+                            _infoRow(
+                              "Email",
+                              widget.data.userId.basicInfo.email,
+                            ),
+                            const Divider(),
+                            _infoRow(
+                              "Phone",
+                              "+973 ${widget.data.userId.basicInfo.mobileNumber}",
+                            ),
+                            const Divider(),
+                            _infoRow(
+                              "Address",
+                              "building ${widget.data.address.building} , floor ${widget.data.address.floor}, aptNo ${widget.data.address.aptNo}",
+                            ),
+                            const Divider(),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Loation",
+                                  style: TextStyle(
+                                    color: AppColors.lightgray_clr,
+                                    fontSize: 12,
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                          const Divider(),
-                          _infoRow("Distane:", "7km"),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              const SizedBox(height: 20),
-
-              Container(
-                margin: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(15),
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Colors.black38,
-                      blurRadius: 6,
-                      offset: Offset(0, 3),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  children: [
-                    Container(
-                      height: 55,
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      decoration: BoxDecoration(
-                        color: AppColors.scoundry_clr,
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(15),
-                          topRight: Radius.circular(15),
+                                Container(
+                                  height: 90,
+                                  width: 200,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    color: const Color.fromARGB(
+                                      196,
+                                      189,
+                                      185,
+                                      185,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const Divider(),
+                            _infoRow("Distane:", "7km"),
+                          ],
                         ),
                       ),
-                      child: Row(
-                        children: [
-                          Container(
-                            height: 34,
-                            width: 34,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.white,
-                            ),
-                            child: Icon(
-                              Icons.person,
-                              color: AppColors.scoundry_clr,
-                            ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Container(
+                  margin: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(15),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Colors.black38,
+                        blurRadius: 6,
+                        offset: Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    children: [
+                      Container(
+                        height: 55,
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        decoration: BoxDecoration(
+                          color: AppColors.scoundry_clr,
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(15),
+                            topRight: Radius.circular(15),
                           ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Text(
-                              "Service Details",
-                              style: TextStyle(
+                        ),
+                        child: Row(
+                          children: [
+                            Container(
+                              height: 34,
+                              width: 34,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
                                 color: Colors.white,
-                                fontWeight: FontWeight.w500,
+                              ),
+                              child: Icon(
+                                Icons.person,
+                                color: AppColors.scoundry_clr,
                               ),
                             ),
-                          ),
-                        ],
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Text(
+                                "Service Details",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Column(
-                        children: [
-                          _infoRow("Service Type", widget.data.serviceId.name),
-                          const Divider(),
-                          _infoRow("Description", widget.data.feedback ?? ""),
-                          const Divider(),
-                          _infoRow(
-                            "Date Required",
-                            widget.data.scheduleService.toIso8601String(),
-                          ),
-                          const Divider(),
-                          _infoRow("Time Window", "10:00AM - 12:00Am"),
-                          const Divider(),
-                          _infoRow(
-                            "Date Created",
-                            widget.data.createdAt.toIso8601String(),
-                          ),
-                        ],
+                      Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          children: [
+                            _infoRow(
+                              "Service Type",
+                              widget.data.serviceId.name,
+                            ),
+                            const Divider(),
+                            _infoRow("Description", widget.data.feedback ?? ""),
+                            const Divider(),
+                            _infoRow(
+                              "Date Required",
+                              widget.data.scheduleService.toIso8601String(),
+                            ),
+                            const Divider(),
+                            _infoRow("Time Window", "10:00AM - 12:00Am"),
+                            const Divider(),
+                            _infoRow(
+                              "Date Created",
+                              widget.data.createdAt.toIso8601String(),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
+              ],
 
               const SizedBox(height: 10),
 
@@ -291,6 +299,32 @@ class _ServicerequestCartState extends State<ServicerequestCart> {
                   ),
                 ),
               ],
+              if (widget.data.assignmentStatus == "completed") ...[
+                RequestCart(
+                  clientname: widget.data.userId.basicInfo.fullName,
+                  serviceRequestID: widget.data.serviceRequestId, 
+                  servicetype: widget.data.serviceId.name,
+                  assignmentStatus: widget.data.assignmentStatus,
+                  scheduleService: widget.data.scheduleService
+                      .toIso8601String(),
+                  createdAt: widget.data.createdAt.toIso8601String(),
+                  feedback: widget.data.feedback ?? '',
+                ),
+              ],
+              if (widget.data.assignmentStatus == "in-progress" ||
+                  widget.data.assignmentStatus == "on-hold") ...[
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 15,
+                    vertical: 10,
+                  ),
+                  child: UpdateRequestView(
+                    serviceRequestId: widget.data.assignmentStatus,
+                    userServiceId: widget.data.id,
+                  ),
+                ),
+              ],
+
               const SizedBox(height: 10),
             ],
           ),
@@ -359,6 +393,14 @@ class _ServicerequestCartState extends State<ServicerequestCart> {
                 ),
               ),
               const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+       PrimaryButton(radius: 15, color: Colors.red, onPressed: (){}, text: "cancel", Width: 133,),
+               PrimaryButton(radius: 15, color: Colors.grey, onPressed: (){}, text: "save",Width: 133)
+                ],
+              )
+       
             ],
           ),
         );
