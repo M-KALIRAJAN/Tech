@@ -6,6 +6,8 @@ import 'package:tech_app/core/constants/app_colors.dart';
 import 'package:tech_app/model/StatusFilter_Model.dart';
 import 'package:tech_app/provider/service_list_provider.dart';
 import 'package:tech_app/routes/route_name.dart';
+import 'package:tech_app/view/update_request.dart';
+import 'package:tech_app/view/update_request_view.dart';
 import 'package:tech_app/widgets/card/income_cart.dart';
 import 'package:tech_app/widgets/card/shimmer_loader.dart';
 
@@ -45,6 +47,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
           children: [
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 15),
+
               child: Header(title: "Income Request"),
             ),
 
@@ -142,7 +145,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
                       final item = data.data[index];
 
                       // Choose widget based on serviceStatus
-                      if (item.serviceStatus.toLowerCase() == 'completed') {
+                      if (item.assignmentStatus.toLowerCase() == 'completed') {
                         return Padding(
                           padding: const EdgeInsets.symmetric(
                             horizontal: 15,
@@ -150,7 +153,19 @@ class _HomeViewState extends ConsumerState<HomeView> {
                           ),
                           child: Text("completed"),
                         );
-                      } else {
+                      } else if (item.assignmentStatus.toLowerCase() ==
+                          'accepted') {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 15,
+                            vertical: 10,
+                          ),
+                          child: UpdateRequestView(
+                            serviceRequestId: item.serviceRequestId,
+                            userServiceId:item.serviceId.id,
+                          ),
+                        );
+                      } else if (item.assignmentStatus == 'all') {
                         return Padding(
                           padding: const EdgeInsets.symmetric(
                             horizontal: 15,
@@ -171,6 +186,8 @@ class _HomeViewState extends ConsumerState<HomeView> {
                             },
                           ),
                         );
+                      } else {
+                        Text("No");
                       }
                     },
                   );

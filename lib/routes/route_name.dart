@@ -6,4 +6,5 @@ class RouteName {
   static const String service_card = "/service_card";
   static const String updated_status = "/updated_status";
   static const String inventory_list = "/inventory_list";
+  static const String sparepart_used = "/sparepart_used";
 }

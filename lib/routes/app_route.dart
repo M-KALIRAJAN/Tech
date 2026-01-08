@@ -6,6 +6,7 @@ import 'package:tech_app/view/bottom_nav.dart';
 import 'package:tech_app/view/bulk_request.dart';
 import 'package:tech_app/view/material_inventory_view.dart';
 import 'package:tech_app/view/material_request.dart';
+import 'package:tech_app/view/spare_part_used.dart';
 import 'package:tech_app/view/update_request.dart';
 import 'package:tech_app/widgets/card/servicerequest_cart.dart';
 import 'package:tech_app/model/ServiceList _Model.dart';
@@ -24,6 +25,10 @@ final Approute = GoRouter(
         GoRoute(
           path: RouteName.inventory_list,
           builder: (context, state) => const MaterialInventoryView(),
+          ),
+           GoRoute(
+          path: RouteName.sparepart_used,
+          builder: (context, state) => const SparePartUsed(),
           ),
         GoRoute(
           path: RouteName.bulk_request,

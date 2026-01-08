@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tech_app/core/constants/app_colors.dart';
 import 'package:tech_app/core/utils/snackbar_helper.dart';
 import 'package:tech_app/services/AcceptRequest_Service.dart';
+import 'package:tech_app/services/StartWork_Service.dart';
 import 'package:tech_app/widgets/inputs/primary_button.dart';
 import 'package:tech_app/model/ServiceList _Model.dart';
 
@@ -18,6 +20,7 @@ class _ServicerequestCartState extends State<ServicerequestCart> {
   @override
   Widget build(BuildContext context) {
     final _acceptrequestService = AcceptrequestService();
+    final StartworkService _startwork = StartworkService();
     Future<void> acceptrequest() async {
       try {
         final assignmentId = widget.data.id;
@@ -27,7 +30,28 @@ class _ServicerequestCartState extends State<ServicerequestCart> {
           backgroundColor: AppColors.scoundry_clr,
           message: "Service accepted",
         );
+        context.pop();
       } catch (e) {}
+    }
+
+    Future<void> startwork() async {
+      context.pop();
+      final userServiceId = widget.data.serviceId.id;
+      try {
+        final result = await _startwork.fetchstartwork(userServiceId);
+        SnackbarHelper.show(
+          context,
+          backgroundColor: AppColors.scoundry_clr,
+          message: "Start Work",
+        );
+        context.pop();
+      } catch (e) {
+        SnackbarHelper.show(
+          context,
+          backgroundColor: Colors.red,
+          message: toString(),
+        );
+      }
     }
 
     return Scaffold(
@@ -261,7 +285,7 @@ class _ServicerequestCartState extends State<ServicerequestCart> {
                     Width: double.infinity,
                     color: AppColors.scoundry_clr,
                     onPressed: () {
-                      
+                      startwork();
                     },
                     text: "Start Work",
                   ),
