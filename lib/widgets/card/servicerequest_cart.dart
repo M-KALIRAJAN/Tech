@@ -302,7 +302,7 @@ class _ServicerequestCartState extends State<ServicerequestCart> {
               if (widget.data.assignmentStatus == "completed") ...[
                 RequestCart(
                   clientname: widget.data.userId.basicInfo.fullName,
-                  serviceRequestID: widget.data.serviceRequestId, 
+                  serviceRequestID: widget.data.serviceRequestId,
                   servicetype: widget.data.serviceId.name,
                   assignmentStatus: widget.data.assignmentStatus,
                   scheduleService: widget.data.scheduleService
@@ -324,7 +324,6 @@ class _ServicerequestCartState extends State<ServicerequestCart> {
                   ),
                 ),
               ],
-
               const SizedBox(height: 10),
             ],
           ),
@@ -332,7 +331,6 @@ class _ServicerequestCartState extends State<ServicerequestCart> {
       ),
     );
   }
-
   Widget _infoRow(String label, String value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
@@ -396,11 +394,22 @@ class _ServicerequestCartState extends State<ServicerequestCart> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-       PrimaryButton(radius: 15, color: Colors.red, onPressed: (){}, text: "cancel", Width: 133,),
-               PrimaryButton(radius: 15, color: Colors.grey, onPressed: (){}, text: "save",Width: 133)
+                  PrimaryButton(
+                    radius: 15,
+                    color: Colors.red,
+                    onPressed: () {},
+                    text: "cancel",
+                    Width: 133,
+                  ),
+                  PrimaryButton(
+                    radius: 15,
+                    color: Colors.grey,
+                    onPressed: () {},
+                    text: "save",
+                    Width: 133,
+                  ),
                 ],
-              )
-       
+              ),
             ],
           ),
         );
