@@ -98,14 +98,7 @@ class _LoginViewState extends State<LoginView> {
                             ),
 
                             TextButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => BottomNav(),
-                                  ),
-                                );
-                              },
+                              onPressed: () {},
                               child: Text(
                                 "Forgot Password?",
                                 style: TextStyle(color: AppColors.scoundry_clr),
