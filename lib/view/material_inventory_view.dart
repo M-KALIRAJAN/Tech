@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tech_app/core/constants/app_colors.dart';
 import 'package:tech_app/model/Inventory_Material_Model.dart';
@@ -52,10 +53,7 @@ class _MaterialInventoryViewState extends State<MaterialInventoryView> {
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: Header(
-                title: "Material Inventory",
-                showRefreshIcon: true,
-              ),
+              child: Header(title: "Material Inventory", showRefreshIcon: true),
             ),
 
             const Divider(),
@@ -74,17 +72,35 @@ class _MaterialInventoryViewState extends State<MaterialInventoryView> {
                   },
                 ),
               )
-
-            /// 🔹 EMPTY STATE
+            /// 🔹EMPTY STATE
             else if (inventoryMaterial == null ||
                 inventoryMaterial!.data.isEmpty)
-              const Expanded(
+              Expanded(
                 child: Center(
-                  child: Text("No inventory found."),
+                  child: Column(
+                    children: [
+                      SvgPicture.asset(
+                        "assets/images/inventory_icon.svg",
+                        height: 100,
+                        width: 100,
+                        colorFilter: const ColorFilter.mode(
+                          Color.fromRGBO(13, 95, 72, 1), // green color
+                          BlendMode.srcIn,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      const Text(
+                        "No inventory found",
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          color: Color.fromRGBO(13, 95, 72, 1),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               )
-
-            
             else
               Expanded(
                 child: ListView.builder(
@@ -92,8 +108,7 @@ class _MaterialInventoryViewState extends State<MaterialInventoryView> {
                   itemBuilder: (context, index) {
                     final item = inventoryMaterial!.data[index];
 
-                    final productName =
-                        item.productId.productName ?? "N/A";
+                    final productName = item.productId.productName ?? "N/A";
                     final price = item.productId.price ?? 0;
                     final count = item.count;
 

@@ -3,13 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:tech_app/core/constants/app_colors.dart';
+import 'package:tech_app/provider/service_list_provider.dart';
+import 'package:tech_app/provider/service_timer_provider.dart';
 import 'package:tech_app/services/Update_Service.dart';
 import 'package:tech_app/widgets/inputs/app_text_field.dart';
 import 'package:tech_app/widgets/inputs/primary_button.dart';
 import 'package:tech_app/widgets/media_upload.dart';
 import 'dart:async';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class UpdateRequestView extends StatefulWidget {
+class UpdateRequestView extends ConsumerStatefulWidget {
   final String serviceRequestId;
   final String userServiceId;
   const UpdateRequestView({
@@ -19,10 +22,10 @@ class UpdateRequestView extends StatefulWidget {
   });
 
   @override
-  State<UpdateRequestView> createState() => _UpdateRequestViewState();
+  ConsumerState<UpdateRequestView> createState() => _UpdateRequestViewState();
 }
 
-class _UpdateRequestViewState extends State<UpdateRequestView> {
+class _UpdateRequestViewState extends ConsumerState<UpdateRequestView> {
   Set<int> selectedIndexes = {
     0,
     1,
@@ -40,52 +43,29 @@ class _UpdateRequestViewState extends State<UpdateRequestView> {
     {"title": "OnHold"},
     {"title": "completed"},
   ];
-bool get isCompletedSelected => selectedIndexes.contains(3);
+  bool get isCompletedSelected => selectedIndexes.contains(3);
   @override
   void initState() {
     super.initState();
     selectedIndexes = {0, 1}; // Always selected
-    _startTimer();
+    // 🔥 START GLOBAL TIMER
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(serviceTimerProvider.notifier).start();
+    });
   }
 
-void _startTimer() {
-  _timer?.cancel(); // safe
-  _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-    setState(() {
-      _elapsedSeconds++;
-    });
-  });
-}
+  void toggleOnHold() {
+    final notifier = ref.read(serviceTimerProvider.notifier);
+    final timerState = ref.read(serviceTimerProvider);
 
-void _stopTimer() {
-  _timer?.cancel();
-  _timer = null;
-}
-
-void toggleOnHold() async {
-  // Toggle first
-  final bool goingOnHold = !isOnHold;
-
-  setState(() {
-    isOnHold = goingOnHold;
-
-    // Always keep Accepted & In Progress
-    selectedIndexes.addAll({0, 1});
-
-    if (goingOnHold) {
-      // Pause timer
-      _stopTimer();
-
-      // Add OnHold
-      selectedIndexes.add(2);
+    if (timerState.isRunning) {
+      notifier.pause();
+      setState(() => isOnHold = true);
     } else {
-      // Resume timer
-      _startTimer();
-
-      // Remove OnHold
-      selectedIndexes.remove(2);
+      notifier.start();
+      setState(() => isOnHold = false);
     }
-  });
+  }
 
   //  CALL API ONLY WHEN GOING ON HOLD (outside setState)
   // if (goingOnHold) {
@@ -97,25 +77,16 @@ void toggleOnHold() async {
   //     debugPrint("OnHold API error: $e");
   //   }
   // }
-}
-
-
 
   @override
   void dispose() {
-    _timer?.cancel();
     statustext.dispose();
     super.dispose();
   }
 
-  String _formatTime(int seconds) {
-    final hours = seconds ~/ 3600;
-    final minutes = (seconds % 3600) ~/ 60;
-    final secs = seconds % 60;
-
-    return '${hours.toString().padLeft(2, '0')}:'
-        '${minutes.toString().padLeft(2, '0')}:'
-        '${secs.toString().padLeft(2, '0')}';
+  String formatDuration(Duration d) {
+    String two(int n) => n.toString().padLeft(2, '0');
+    return "${two(d.inHours)}:${two(d.inMinutes % 60)}:${two(d.inSeconds % 60)}";
   }
 
   Future<void> pickImage(ImageSource source) async {
@@ -142,7 +113,10 @@ void toggleOnHold() async {
       );
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Update saved successfully") ,backgroundColor: AppColors.scoundry_clr,),
+        const SnackBar(
+          content: Text("Update saved successfully"),
+          backgroundColor: AppColors.scoundry_clr,
+        ),
       );
       context.pop();
     } catch (e) {
@@ -154,6 +128,7 @@ void toggleOnHold() async {
 
   @override
   Widget build(BuildContext context) {
+    final timerState = ref.watch(serviceTimerProvider);
     return Container(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -203,7 +178,7 @@ void toggleOnHold() async {
                       ),
                       const SizedBox(width: 8),
                       Text(
-                        _formatTime(_elapsedSeconds),
+                        formatDuration(timerState.elapsed),
                         style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -308,7 +283,7 @@ void toggleOnHold() async {
             ),
 
             const SizedBox(height: 25),
-            
+
             // PrimaryButton(
             //   radius: 15,
             //   Width: double.infinity,
@@ -320,29 +295,29 @@ void toggleOnHold() async {
             //   },
             //   text: "Save Updates",
             // ),
-
             isCompletedSelected
-    ? PrimaryButton(
-        radius: 15,
-        Width: double.infinity,
-        height: 55,
-        color: AppColors.scoundry_clr,
-        onPressed: SaveUpdates,
-        text: "Save Updates",
-      )
-    : PrimaryButton(
-        radius: 15,
-        Width: double.infinity,
-        height: 55,
-        color: Colors.grey,
-        onPressed: null, // disabled
-        text: "Save Updates",
-      ),
+                ? PrimaryButton(
+                    radius: 15,
+                    Width: double.infinity,
+                    height: 55,
+                    color: AppColors.scoundry_clr,
+                    onPressed: SaveUpdates,
+                    text: "Save Updates",
+                  )
+                : PrimaryButton(
+                    radius: 15,
+                    Width: double.infinity,
+                    height: 55,
+                    color: Colors.grey,
+                    onPressed: null, // disabled
+                    text: "Save Updates",
+                  ),
           ],
         ),
       ),
     );
   }
+
   void showImagePickerSheet(BuildContext context) {
     showModalBottomSheet(
       context: context,

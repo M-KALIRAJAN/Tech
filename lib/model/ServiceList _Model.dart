@@ -1,12 +1,10 @@
 // import 'dart:convert';
 
-
 // ServiceListModel serviceListFromJson(String str) =>
 //     ServiceListModel.fromJson(json.decode(str));
 
 // String serviceListToJson(ServiceListModel data) =>
 //     json.encode(data.toJson());
-
 
 // class ServiceListModel {
 //   int count;
@@ -31,7 +29,6 @@
 //       };
 // }
 
-
 // class Datum {
 //   StatusTimestamps statusTimestamps;
 //   String id;
@@ -52,7 +49,6 @@
 //   Address address;
 //   String assignmentStatus;
 //   dynamic assignmentReason;
-    
 
 //   Datum({
 //     required this.statusTimestamps,
@@ -96,7 +92,7 @@
 //         serviceRequestId: json["serviceRequestID"],
 //         address: Address.fromJson(json["address"]),
 //         assignmentStatus: json["assignmentStatus"],
-      
+
 //       );
 
 //   Map<String, dynamic> toJson() => {
@@ -276,14 +272,12 @@
 //       );
 // }
 
-
 import 'dart:convert';
 
 ServiceListModel serviceListFromJson(String str) =>
     ServiceListModel.fromJson(json.decode(str));
 
-String serviceListToJson(ServiceListModel data) =>
-    json.encode(data.toJson());
+String serviceListToJson(ServiceListModel data) => json.encode(data.toJson());
 
 /// ===============================
 /// SERVICE LIST MODEL
@@ -292,24 +286,19 @@ class ServiceListModel {
   final int count;
   final List<Datum> data;
 
-  ServiceListModel({
-    required this.count,
-    required this.data,
-  });
+  ServiceListModel({required this.count, required this.data});
 
   factory ServiceListModel.fromJson(Map<String, dynamic> json) {
     return ServiceListModel(
       count: json["count"] ?? 0,
-      data: (json["data"] as List)
-          .map((x) => Datum.fromJson(x))
-          .toList(),
+      data: (json["data"] as List).map((x) => Datum.fromJson(x)).toList(),
     );
   }
 
   Map<String, dynamic> toJson() => {
-        "count": count,
-        "data": data.map((x) => x.toJson()).toList(),
-      };
+    "count": count,
+    "data": data.map((x) => x.toJson()).toList(),
+  };
 }
 
 /// ===============================
@@ -338,9 +327,11 @@ class Datum {
 
   final String serviceRequestId;
   final Address address;
-
+  final List<String> media;
   final String assignmentStatus;
   final String? assignmentReason;
+
+  final TechnicianUserService? technicianUserService;
 
   Datum({
     required this.statusTimestamps,
@@ -358,16 +349,19 @@ class Datum {
     required this.payment,
     required this.createdAt,
     required this.updatedAt,
+    required this.media,
     required this.serviceRequestId,
     required this.address,
     required this.assignmentStatus,
     this.assignmentReason,
+    this.technicianUserService,
   });
 
   factory Datum.fromJson(Map<String, dynamic> json) {
     return Datum(
-      statusTimestamps:
-          StatusTimestamps.fromJson(json["statusTimestamps"] ?? {}),
+      statusTimestamps: StatusTimestamps.fromJson(
+        json["statusTimestamps"] ?? {},
+      ),
       id: json["_id"] ?? "",
       userId: UserId.fromJson(json["userId"] ?? {}),
       serviceId: ServiceId.fromJson(json["serviceId"] ?? {}),
@@ -385,26 +379,155 @@ class Datum {
       technicianAccepted: json["technicianAccepted"] ?? false,
       payment: json["payment"] ?? 0,
 
-      createdAt:
-          DateTime.tryParse(json["createdAt"] ?? "") ?? DateTime.now(),
-      updatedAt:
-          DateTime.tryParse(json["updatedAt"] ?? "") ?? DateTime.now(),
+      createdAt: DateTime.tryParse(json["createdAt"] ?? "") ?? DateTime.now(),
+      updatedAt: DateTime.tryParse(json["updatedAt"] ?? "") ?? DateTime.now(),
 
       serviceRequestId: json["serviceRequestID"] ?? "",
       address: Address.fromJson(json["address"] ?? {}),
-
+      media: json["media"] != null ? List<String>.from(json["media"]) : [],
       assignmentStatus: json["assignmentStatus"] ?? "",
       assignmentReason: json["assignmentReason"],
+      technicianUserService: json["technicianUserService"] != null
+          ? TechnicianUserService.fromJson(json["technicianUserService"])
+          : null,
     );
   }
 
   Map<String, dynamic> toJson() => {
-        "_id": id,
-        "serviceRequestID": serviceRequestId,
-        "feedback": feedback,
-        "serviceStatus": serviceStatus,
-        "payment": payment,
-      };
+    "_id": id,
+    "serviceRequestID": serviceRequestId,
+    "feedback": feedback,
+    "serviceStatus": serviceStatus,
+    "payment": payment,
+    "technicianUserService": technicianUserService?.toJson(),
+  };
+}
+
+class TechnicianUserService {
+  final String id;
+  final String userServiceId;
+  final bool adminNotified;
+  final List<Assignment> assignments;
+
+  TechnicianUserService({
+    required this.id,
+    required this.userServiceId,
+    required this.adminNotified,
+    required this.assignments,
+  });
+
+  factory TechnicianUserService.fromJson(Map<String, dynamic> json) {
+    return TechnicianUserService(
+      id: json["_id"] ?? "",
+      userServiceId: json["userServiceId"] ?? "",
+      adminNotified: json["adminNotified"] ?? false,
+      assignments: json["assignments"] != null
+          ? List<Assignment>.from(
+              json["assignments"].map((x) => Assignment.fromJson(x)),
+            )
+          : [],
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    "_id": id,
+    "userServiceId": userServiceId,
+    "adminNotified": adminNotified,
+    "assignments": assignments.map((x) => x.toJson()).toList(),
+  };
+}
+
+/// ===============================
+/// ASSIGNMENTS
+/// ===============================
+class Assignment {
+  final String technicianId;
+  final String status;
+  final String? notes;
+  final List<String> media;
+  final int workDuration;
+  final List<UsedPart> usedParts;
+  final bool paymentRaised;
+  final DateTime? workStartedAt;
+
+  final DateTime? updatedAt;
+  Assignment({
+    required this.technicianId,
+    required this.status,
+    this.notes,
+    required this.media,
+    required this.workDuration,
+    required this.usedParts,
+    required this.paymentRaised,
+    this.workStartedAt,
+    this.updatedAt
+  });
+
+  factory Assignment.fromJson(Map<String, dynamic> json) {
+    return Assignment(
+      technicianId: json["technicianId"] ?? "",
+      status: json["status"] ?? "",
+      notes: json["notes"],
+      media: json["media"] != null ? List<String>.from(json["media"]) : [],
+      workDuration: json["workDuration"] ?? 0,
+      usedParts: json["usedParts"] != null
+          ? List<UsedPart>.from(
+              json["usedParts"].map((x) => UsedPart.fromJson(x)),
+            )
+          : [],
+      paymentRaised: json["paymentRaised"] ?? false,
+      workStartedAt: DateTime.tryParse(json["workStartedAt"] ?? ""),
+      updatedAt:DateTime.tryParse(json["workStartedAt"] ?? "")
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    "technicianId": technicianId,
+    "status": status,
+    "notes": notes,
+    "media": media,
+    "workDuration": workDuration,
+    "usedParts": usedParts.map((x) => x.toJson()).toList(),
+    "paymentRaised": paymentRaised,
+    "workStartedAt": workStartedAt?.toIso8601String(),
+  };
+}
+
+/// ===============================
+/// USED PARTS
+/// ===============================
+class UsedPart {
+  final String productId;
+  final String productName;
+  final int count;
+  final int price;
+  final int total;
+
+  UsedPart({
+    required this.productId,
+    required this.productName,
+    required this.count,
+    required this.price,
+    required this.total,
+  });
+
+  factory UsedPart.fromJson(Map<String, dynamic> json) {
+    return UsedPart(
+      productId: json["productId"] ?? "",
+      productName: json["productName"] ?? "",
+      count: json["count"] ?? 0,
+      price: json["price"] ?? 0,
+      total: json["total"] ?? 0,
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    "productId": productId,
+    "productName": productName,
+    "count": count,
+    "price": price,
+    "total": total,
+  };
 }
 
 /// ===============================
@@ -471,10 +594,8 @@ class IssuesId {
       id: json["_id"] ?? "",
       serviceId: json["serviceId"] ?? "",
       issue: json["issue"] ?? "",
-      createdAt:
-          DateTime.tryParse(json["createdAt"] ?? "") ?? DateTime.now(),
-      updatedAt:
-          DateTime.tryParse(json["updatedAt"] ?? "") ?? DateTime.now(),
+      createdAt: DateTime.tryParse(json["createdAt"] ?? "") ?? DateTime.now(),
+      updatedAt: DateTime.tryParse(json["updatedAt"] ?? "") ?? DateTime.now(),
     );
   }
 }
@@ -505,10 +626,8 @@ class ServiceId {
       name: json["name"] ?? "",
       serviceImage: json["serviceImage"] ?? "",
       serviceLogo: json["serviceLogo"] ?? "",
-      createdAt:
-          DateTime.tryParse(json["createdAt"] ?? "") ?? DateTime.now(),
-      updatedAt:
-          DateTime.tryParse(json["updatedAt"] ?? "") ?? DateTime.now(),
+      createdAt: DateTime.tryParse(json["createdAt"] ?? "") ?? DateTime.now(),
+      updatedAt: DateTime.tryParse(json["updatedAt"] ?? "") ?? DateTime.now(),
     );
   }
 }
@@ -535,13 +654,10 @@ class StatusTimestamps {
 
   factory StatusTimestamps.fromJson(Map<String, dynamic> json) {
     return StatusTimestamps(
-      submitted:
-          DateTime.tryParse(json["submitted"] ?? "") ?? DateTime.now(),
-      technicianAssigned:
-          DateTime.tryParse(json["technicianAssigned"] ?? ""),
+      submitted: DateTime.tryParse(json["submitted"] ?? "") ?? DateTime.now(),
+      technicianAssigned: DateTime.tryParse(json["technicianAssigned"] ?? ""),
       inProgress: DateTime.tryParse(json["inProgress"] ?? ""),
-      paymentInProgress:
-          DateTime.tryParse(json["paymentInProgress"] ?? ""),
+      paymentInProgress: DateTime.tryParse(json["paymentInProgress"] ?? ""),
       completed: DateTime.tryParse(json["completed"] ?? ""),
       accepted: DateTime.tryParse(json["accepted"] ?? ""),
     );
@@ -555,10 +671,7 @@ class UserId {
   final BasicInfo basicInfo;
   final String id;
 
-  UserId({
-    required this.basicInfo,
-    required this.id,
-  });
+  UserId({required this.basicInfo, required this.id});
 
   factory UserId.fromJson(Map<String, dynamic> json) {
     return UserId(
@@ -567,6 +680,8 @@ class UserId {
     );
   }
 }
+
+
 
 /// ===============================
 /// BASIC INFO
@@ -592,4 +707,6 @@ class BasicInfo {
       gender: json["gender"] ?? "",
     );
   }
+  
 }
+

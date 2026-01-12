@@ -10,7 +10,7 @@ import 'package:tech_app/view/update_request.dart';
 import 'package:tech_app/view/update_request_view.dart';
 import 'package:tech_app/widgets/card/income_cart.dart';
 import 'package:tech_app/widgets/card/shimmer_loader.dart';
-
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:tech_app/widgets/header.dart';
 
 class HomeView extends ConsumerStatefulWidget {
@@ -136,7 +136,32 @@ class _HomeViewState extends ConsumerState<HomeView> {
               child: serviceList.when(
                 data: (data) {
                   if (data == null || data.data.isEmpty) {
-                    return const Center(child: Text("No requests found"));
+                    return Center(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          SvgPicture.asset(
+                            "assets/images/no_request_found.svg",
+                            width: 120, // reduce size
+                            height: 120,
+                            colorFilter: const ColorFilter.mode(
+                              Color.fromRGBO(13, 95, 72, 1), // green color
+                              BlendMode.srcIn,
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          const Text(
+                            "No request found",
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              color: Color.fromRGBO(13, 95, 72, 1),
+                            ),
+                          ),
+                        
+                        ],
+                      ),
+                    );
                   }
 
                   return ListView.builder(
@@ -151,12 +176,14 @@ class _HomeViewState extends ConsumerState<HomeView> {
                             horizontal: 15,
                             vertical: 10,
                           ),
-                          child:  IncomeCard(
+                          child: IncomeCard(
                             name: item.userId.basicInfo.fullName,
                             service: item.serviceId.name,
                             issue: item.issuesId.issue,
-                            schedule: formatDate(item.scheduleService),
+                            assignments: item.technicianUserService?.assignments ?? [],
                             // status: item.serviceStatus,
+                            payment:item.payment,
+
                             assignmentStatus: item.assignmentStatus,
                             onClick: () {
                               context.push(
@@ -166,22 +193,8 @@ class _HomeViewState extends ConsumerState<HomeView> {
                             },
                           ),
                         );
-                      } 
-
-                      // else if (item.assignmentStatus.toLowerCase() ==
-                      //     'in-progress') {
-                      //   return Padding(
-                      //     padding: const EdgeInsets.symmetric(
-                      //       horizontal: 15,
-                      //       vertical: 10,
-                      //     ),
-                      //     child: UpdateRequestView(
-                      //       serviceRequestId: item.id,
-                      //       userServiceId:item.serviceId.id,
-                      //     ),
-                      //   );
-                      // }
-                       else {
+                      } else if (item.assignmentStatus.toLowerCase() ==
+                          'in-progress') {
                         return Padding(
                           padding: const EdgeInsets.symmetric(
                             horizontal: 15,
@@ -202,7 +215,28 @@ class _HomeViewState extends ConsumerState<HomeView> {
                             },
                           ),
                         );
-                      } 
+                      } else {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 15,
+                            vertical: 10,
+                          ),
+                          child: IncomeCard(
+                            name: item.userId.basicInfo.fullName,
+                            service: item.serviceId.name,
+                            issue: item.issuesId.issue,
+                            schedule: formatDate(item.scheduleService),
+                            // status: item.serviceStatus,
+                            assignmentStatus: item.assignmentStatus,
+                            onClick: () {
+                              context.push(
+                                RouteName.service_card,
+                                extra: item, // send the full item to next page
+                              );
+                            },
+                          ),
+                        );
+                      }
                     },
                   );
                 },
@@ -225,26 +259,6 @@ class _HomeViewState extends ConsumerState<HomeView> {
       ),
     );
   }
-
-  //  INCOME LIST
-  // Widget _buildIncomeList() {
-  //   if (serviceList.isEmpty) {
-  //     return const Center(child: Text("No Income Requests"));
-  //   }
-
-  //   return serviceList.when(
-  //      data
-  //   )
-  //   ListView.builder(
-  //     itemCount: incomeList.length,
-  //     itemBuilder: (context, index) {
-  //       return const Padding(
-  //         padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-  //         child: IncomeCard(),
-  //       );
-  //     },
-  //   );
-  // }
 
   //  COMPLETED LIST
   //   Widget _buildCompletedList() {

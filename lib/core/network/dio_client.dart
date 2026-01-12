@@ -5,7 +5,7 @@ class DioClient {
   static final Dio dio =
       Dio(
           BaseOptions(
-            baseUrl: "https://nadi-buhrain-render-site.onrender.com/api/",
+            baseUrl: "https://srv1252888.hstgr.cloud/api/",
             responseType: ResponseType.json,
             connectTimeout: const Duration(seconds: 30),
             receiveTimeout: const Duration(seconds: 30),
@@ -27,4 +27,8 @@ class DioClient {
             },
           ),
         );
+}
+
+class ImageBaseUrl {
+  static const baseUrl = "https://srv1252888.hstgr.cloud/uploads";
 }

@@ -5,8 +5,6 @@ import 'package:tech_app/model/ServiceList _Model.dart';
 
 class ServicelistService {
   final _dio = DioClient.dio;
-
-
   Future<ServiceListModel> fetchServiceList({String status = 'all'}) async {
     try {
       final response = await _dio.post("techie/list?status=$status");

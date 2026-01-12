@@ -27,12 +27,9 @@ class _BottomNavState extends State<BottomNav> {
     super.initState();
     screens = [
       () => HomeView(),
-      // () => MyRequestView(),
-   
-      // () => LivechatView(),
-      // () => UpdateRequestView(),
-         ()=> SparePartUsed(),
-         () => MaterialInventoryView(),
+
+      () => MaterialInventoryView(),
+               ()=> SparePartUsed(),
       () => ProfileView(),
     ];
   }
@@ -88,7 +85,16 @@ class _BottomNavState extends State<BottomNav> {
                 ),
                 label: "Requests",
               ),
+           
               BottomNavigationBarItem(
+                icon: ImageIcon(AssetImage("assets/icons/chat.png"), size: 26),
+                activeIcon: ImageIcon(
+                  AssetImage("assets/icons/chat.png"),
+                  size: 26,
+                ),
+                label: "Inventory",
+              ),
+                 BottomNavigationBarItem(
                 icon: ImageIcon(
                   AssetImage("assets/icons/services.png"),
                   size: 27,
@@ -98,14 +104,6 @@ class _BottomNavState extends State<BottomNav> {
                   size: 27,
                 ),
                 label: "Active Tasks",
-              ),
-              BottomNavigationBarItem(
-                icon: ImageIcon(AssetImage("assets/icons/chat.png"), size: 26),
-                activeIcon: ImageIcon(
-                  AssetImage("assets/icons/chat.png"),
-                  size: 26,
-                ),
-                label: "Inventory",
               ),
               BottomNavigationBarItem(
                 icon: ImageIcon(
